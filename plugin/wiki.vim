@@ -16,11 +16,11 @@ call wiki#init#option('wiki_journal', {
       \   'weekly' : '%Y_w%V',
       \   'monthly' : '%Y_m%m',
       \ },
-      \})
+\})
 
 " Initialize global commands
 command! WikiBacklinkBuffer call wiki#graph#backlink_buffer()
 
 " Initialize mappings
-nnoremap <silent> <plug>(wiki-backlink-buffer) :WikiBacklinkBuffer<cr>
+"nnoremap <silent> <plug>(wiki-backlink-buffer) :WikiBacklinkBuffer<cr>
 
