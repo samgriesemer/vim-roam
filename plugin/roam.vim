@@ -19,7 +19,7 @@ call wiki#init#option('wiki_journal', {
 \})
 
 " Initialize global commands
-command! WikiBacklinkBuffer call wiki#graph#backlink_buffer()
+command! RoamBacklinkBuffer call roam#graph#backlink_buffer()
 
 " Initialize mappings
 "nnoremap <silent> <plug>(wiki-backlink-buffer) :WikiBacklinkBuffer<cr>

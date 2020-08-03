@@ -18,7 +18,7 @@
 
 
 " NEW FUNCTIONS
-function! wiki#graph#backlink_buffer()
+function! roam#graph#backlink_buffer()
   if !has_key(b:wiki, 'graph')
     let b:wiki.graph = s:graph.init()
   endif
