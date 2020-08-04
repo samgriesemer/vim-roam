@@ -5,18 +5,18 @@
 "
 
 " wiki.vim check and options
-if g:wiki_loaded == 1 | finish | endif
-
-" Initialize options
-call wiki#init#option('wiki_journal', {
-      \ 'name' : '',
-      \ 'frequency' : 'daily',
-      \ 'date_format' : {
-      \   'daily' : '%Y-%m-%d',
-      \   'weekly' : '%Y_w%V',
-      \   'monthly' : '%Y_m%m',
-      \ },
-\})
+"if g:wiki_loaded == 1 | finish | endif
+"
+"" Initialize options
+"call wiki#init#option('wiki_journal', {
+"      \ 'name' : '',
+"      \ 'frequency' : 'daily',
+"      \ 'date_format' : {
+"      \   'daily' : '%Y-%m-%d',
+"      \   'weekly' : '%Y_w%V',
+"      \   'monthly' : '%Y_m%m',
+"      \ },
+"\})
 
 " Initialize global commands
 command! RoamBacklinkBuffer call roam#graph#backlink_buffer()
