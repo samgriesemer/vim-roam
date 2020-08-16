@@ -19,6 +19,7 @@
 
 " NEW FUNCTIONS
 function! roam#graph#backlink_buffer()
+  " check for graph attribute in wiki object of current buffer
   if !has_key(b:wiki, 'graph')
     let b:wiki.graph = s:graph.init()
   endif
@@ -97,4 +98,109 @@ function! s:list_bounds()
   return [l:start, l:end]
 endfunction
 
+
+" from original plugin
+
+let s:graph = {}
+
+function! s:graph.init() abort dict " {{{1
+  let new = deepcopy(s:graph)
+  unlet new.init
+
+  let new.nodes = s:gather_nodes()
+
+  return new
+endfunction
+
+" }}}1
+function! s:graph.links_from(node) abort dict " {{{1
+  return deepcopy(get(get(self.nodes, a:node, {}), 'links', []))
+endfunction
+
+" }}}1
+function! s:graph.links_to(node) abort dict " {{{1
+  return deepcopy(get(get(self.nodes, a:node, {}), 'linked', []))
+endfunction
+
+" }}}1
+
+function! s:gather_nodes() abort " {{{1
+  if has_key(s:nodes, b:wiki.root)
+    return s:nodes[b:wiki.root]
+  endif
+
+  redraw
+  echohl ModeMsg
+  echo 'wiki: Scanning wiki graph nodes ... '
+  echohl NONE
+  sleep 25m
+
+  let l:cache = wiki#cache#open('graph', {
+        \ 'local': 1,
+        \ 'default': { 'ftime': -1 },
+        \})
+
+  let l:gathered = {}
+  for l:file in globpath(b:wiki.root, '**/*.' . b:wiki.extension, 0, 1)
+    let l:node = s:file_to_node(l:file)
+
+    let l:current = l:cache.get(l:file)
+    let l:ftime = getftime(l:file)
+    if l:ftime > l:current.ftime
+      let l:cache.modified = 1
+      let l:current.ftime = l:ftime
+      let l:current.links = []
+      for l:link in filter(wiki#link#get_all(l:file),
+            \ 'get(v:val, ''scheme'', '''') ==# ''wiki''')
+        call add(l:current.links, {
+              \ 'node_from' : l:node,
+              \ 'node_to' : s:file_to_node(l:link.path),
+              \ 'filename_from' : l:file,
+              \ 'filename_to' : resolve(l:link.path),
+              \ 'text' : get(l:link, 'text'),
+              \ 'anchor' : l:link.anchor,
+              \ 'lnum' : l:link.lnum,
+              \ 'col' : l:link.c1
+              \})
+      endfor
+    endif
+
+    if has_key(l:gathered, l:node)
+      echoerr 'Not implemented!'
+    endif
+
+    let l:gathered[l:node] = l:current
+  endfor
+
+  " Save cache
+  call l:cache.write()
+
+  for l:node in values(l:gathered)
+    let l:node.linked = []
+  endfor
+
+  for l:node in values(l:gathered)
+    for l:link in l:node.links
+      if has_key(l:gathered, l:link.node_to)
+        call add(l:gathered[l:link.node_to].linked, l:link)
+      endif
+    endfor
+  endfor
+
+  echohl ModeMSG
+  echon 'DONE'
+  echohl NONE
+
+  let s:nodes[b:wiki.root] = l:gathered
+  return l:gathered
+endfunction
+
+let s:nodes = {}
+
+" }}}1
+function! s:file_to_node(file) abort " {{{1
+  return fnamemodify(a:file, ':t:r')
+endfunction
+
+" }}}1
 

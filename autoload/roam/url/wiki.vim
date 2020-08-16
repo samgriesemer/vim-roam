@@ -24,8 +24,8 @@ function! wiki#url#wiki#parse(url) abort " {{{1
   " so explicit; is the exact same code as is used to modify page names when using
   " WikiOpen
   let l:fname =
-        \ !empty(g:wiki_map_create_page) && exists('*' . g:wiki_map_create_page)
-        \ ? call(g:wiki_map_create_page, [l:fname])
+        \ !empty(g:wiki_map_visit_link) && exists('*' . g:wiki_map_visit_link)
+        \ ? call(g:wiki_map_visit_link, [l:fname])
         \ : l:fname
 
   " Determine the proper extension (if necessary)
