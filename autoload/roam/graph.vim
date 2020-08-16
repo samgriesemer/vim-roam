@@ -165,10 +165,6 @@ function! s:gather_nodes() abort " {{{1
       endfor
     endif
 
-    if has_key(l:gathered, l:node)
-      echoerr 'Not implemented!'
-    endif
-
     let l:gathered[l:node] = l:current
   endfor
 
