@@ -65,7 +65,8 @@ function! roam#graph#backlink_buffer()
     setlocal filetype=markdown
     let i = 1
     for l:link in l:results
-        call setline(i, '# '.l:link.filename)
+        let title = call(g:wiki_map_file_to_title, [l:link.node_from])
+        call setline(i, '# '.title.' ([['.title.']])')
         let i = i+1
         call setline(i, l:link.text)
         let i = i+len(l:link.text)
