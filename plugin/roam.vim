@@ -18,7 +18,9 @@ call roam#init#option('wiki_journal', {
       \   'monthly' : '%Y_m%m',
       \ },
 \})
-call roam#init#option('write_on_nav', 1)
+call roam#init#option('prose_links', 1)
+" enables title transform for FZF, backlinks, renaming, etc; anywhere we need to generate
+" links we should check this option and see if we should create prose links
 call roam#init#option('wiki_map_create_page', 'util#str_to_fname')
 call roam#init#option('wiki_map_file_to_title', 'util#fname_to_str')
 call roam#init#option('wiki_map_link_create', '')

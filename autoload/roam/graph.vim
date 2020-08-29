@@ -64,10 +64,15 @@ function! roam#graph#backlink_buffer()
     setlocal buftype=nofile
     setlocal filetype=markdown
     let i = 1
+    let cur_page = ''
     for l:link in l:results
-        let title = call(g:wiki_map_file_to_title, [l:link.node_from])
-        call setline(i, '# '.title.' ([['.title.']])')
-        let i = i+1
+        " group same-page results under same header
+        if cur_page != l:link.node_from
+            let title = call(g:wiki_map_file_to_title, [l:link.node_from])
+            call setline(i, '# '.title.' ([['.title.']])')
+            let cur_page = l:link.node_from
+            let i = i+1
+        endif
         call setline(i, l:link.text)
         let i = i+len(l:link.text)
         call setline(i, '')
