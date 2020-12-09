@@ -1,32 +1,38 @@
 # Introduction
+Vim-roam is a plugin for networked note management in Vim. The name `vim-roam` takes from
+the popular note taking tool [Roam research](https://roamresearch.com), and our goal is to
+implement core features present in Roam (along with other growing note tools like
+[Obsidian.md](https://obsidian.md), etc) in a vanilla Vim environment.
 
-This is a custom fork of Lervag's fanstastic
-[wiki.vim](https://github.com/lervag/wiki.vim) plugin. This was created to address
-(mainly personal) problems I have with built-in functionality of the plugin, as well as
-extend it to enable [Roam research](https://roamresearch.com/)-like functionality:
+This plugin builds on the fantastic [wiki.vim](https://github.com/lervag/wiki.vim) plugin,
+which implements a lightweight core for managing a personal wiki in Vim. I maintain a
+separate `wiki.vim` [development fork](https://github.com/samgriesemer/wiki.vim) for
+managing low-level changes needed for `vim-roam` functionality. This is purposefully
+separated from the `vim-roam` repo to clearly distinguish the code that falls outside the
+scope of the original `wiki.vim` project.
 
-1. (Bug) Broken relative link navigation for wiki links. I want my link targets to be
-   relative to the current file for consistency and to ensure HTML conversion used
-   relative links.  While this works in some instances, when a link needs to go to a
-   parent directory the plugin incorrectly appends the relative link to the end of an
-   absolute link. For example,
+## What does it do
+`vim-roam` makes it easy to maintain a personal wiki on a set of local Markdown files.
+Most of this is enabled by the core `wiki.vim` functionality (see their
+[documentation](https://github.com/lervag/wiki.vim) for more), but `vim-roam` extends this
+by improving the underlying note graph system and backlink exploration.
 
-    ```
-    This is a relative [link](../dir2/other.md) inside `dir1/file.md`. When <cr> is hit,
-    wiki.vim attempts to go to the file `dir1/../dir2/other.md` literally, without
-    properly expanded the relativel `..`.
-    ```
+More broadly, the `vim-roam` initiative encompasses a set of
+[ideals](https://samgriesemer.com/Vim-roam) and compatible external tools that create a
+better overall wiki experience. These include the direct `vim-roam` extensions
+[vim-roam-task](https://github.com/samgriesemer/vim-roam-task) (for task management) and
+[vim-roam-md](https://github.com/samgriesemer/vim-roam-md) (for syntax highlighting), as
+well as more general tools like [fzf.vim](https://github.com/junegunn/fzf.vim),
+[ultisnips](https://github.com/SirVer/ultisnips),
+[tabular](https://github.com/godlygeek/tabular), and
+[bullets.vim](https://github.com/dkarter/bullets.vim)
 
-   This problem is solved by simply calling the `realpath` utility to expand any relative
-   path into the proper absolute path. There may be a better way to do this without
-   calling a shell command, but for now this seems to do the job.
-1. (Feature) Improved backlink functionality.
-2. Added `g:write_on_follow` options to automatically save the current buffer before
-   following a link (avoiding the consistent error message in favor of habit)
-3. (Future feature) Flexible link schema for going to any line or column in any file. This
-   will allow backlinks to go directly to lines that aren't anchors, and allow references
-   to any line across the wiki (like [Roam](https://roamresearch.com/)'s embed feature).
-   Such a link schema is not supported by Markdown itself, and can't be replicated in HTML
-   easily (both just allow anchor links to headers at best), but it could be useful
-   in-system functionality.
+## Comparison with Vimwiki
+Compared to `vim-roam` and `wiki.vim`, [vimwiki](https://github.com/vimwiki/vimwiki) is a
+slightly bulkier plugin with a larger feature scope that may introduce conflicts or hinder
+customization. `vim-roam` and `wiki.vim` are likely more suitable for those interested in
+greater low-level control over their Vim environment and wish to use external Markdown
+filetype plugins without conflicts. That said, you should absolutely give `vimwiki` a look
+if you haven't already; it does a lot of things well, has an active community, and could
+satisfy all of your needs. 
 
