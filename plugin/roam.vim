@@ -15,9 +15,10 @@ call roam#init#option('wiki_journal', {
       \ },
 \})
 call roam#init#option('wiki_map_text_to_file', 'util#str_to_fname')
-call roam#init#option('wiki_map_link_to_file', '')
+call roam#init#option('wiki_map_link_to_file', 'util#str_to_fname')
 call roam#init#option('wiki_map_text_to_link', '')
 call roam#init#option('wiki_map_file_to_link', 'util#fname_to_str')
+call roam#init#option('wiki_map_file_to_text', 'util#fname_to_str')
 call roam#init#option('wiki_link_conceal', 0)
 
 " Initialize global commands

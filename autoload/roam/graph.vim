@@ -73,7 +73,7 @@ function! roam#graph#backlink_buffer()
     for l:link in l:results
         " group same-page results under same header
         if cur_page != l:link.node_from
-            let title = call(g:wiki_map_file_to_title, [l:link.node_from])
+            let title = call(g:wiki_map_file_to_text, [l:link.node_from])
             call setbufline(s:blbufnr, i, '# '.title.' ([['.title.']])')
             let cur_page = l:link.node_from
             let i = i+1
@@ -95,15 +95,24 @@ function! roam#graph#update_backlink_buffer()
 endfunction
 
 function! roam#graph#testli()
-  let [l:root, l:current] = wiki#list#get()
+  let [l:root, l:current] = wiki#list#parser#get_current()
   if empty(l:current)
     return []
   endif
 
+  l:end_old = []
   while v:true
     let l:start = [l:current.lnum_start, 1]
-    let l:end = [l:current.lnum_end_children(), 1]
+    let l:end = [0, 1]
+
+    if has_key(l:current, 'lnum_end_children')
+        let l:end[0] = l:current.lnum_end_children()
+    elseif !empty(l:end_old)
+        let l:end[0] = l:end_old[0]
+    endif 
+
     let l:end[1] = strlen(getline(l:end[0]))
+    let l:end_old = l:end
     let l:linewise = 1
 
     if l:current.type ==# 'root'
@@ -119,15 +128,24 @@ function! roam#graph#testli()
 endfunction
 
 function! s:list_bounds()
-  let [l:root, l:current] = wiki#list#get()
+  let [l:root, l:current] = wiki#list#parser#get_current()
   if empty(l:current)
     return []
   endif
 
+  let l:end_old = []
   while v:true
     let l:start = [l:current.lnum_start, 1]
-    let l:end = [l:current.lnum_end_children(), 1]
+    let l:end = [0, 1]
+
+    if has_key(l:current, 'lnum_end_children')
+        let l:end[0] = l:current.lnum_end_children()
+    elseif !empty(l:end_old)
+        let l:end[0] = l:end_old[0]
+    endif 
+
     let l:end[1] = strlen(getline(l:end[0]))
+    let l:end_old = l:end
     let l:linewise = 1
 
     if l:current.type ==# 'root'
