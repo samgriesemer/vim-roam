@@ -1,11 +1,7 @@
-" A Roam research wiki plugin for Vim
+" A networked wiki plugin for Vim
 "
 " Maintainer: Sam Griesemer
 " Email:      samgriesemer@gmail.com
-"
-
-" wiki.vim check and options
-"if g:wiki_loaded == 1 | finish | endif
 "
 
 " Initialize options
@@ -18,16 +14,20 @@ call roam#init#option('wiki_journal', {
       \   'monthly' : '%Y_m%m',
       \ },
 \})
-call roam#init#option('prose_links', 1)
-" enables title transform for FZF, backlinks, renaming, etc; anywhere we need to generate
-" links we should check this option and see if we should create prose links
-call roam#init#option('wiki_map_create_page', 'util#str_to_fname')
-call roam#init#option('wiki_map_file_to_title', 'util#fname_to_str')
-call roam#init#option('wiki_map_link_create', '')
+call roam#init#option('wiki_map_text_to_file', 'util#str_to_fname')
+call roam#init#option('wiki_map_link_to_file', '')
+call roam#init#option('wiki_map_text_to_link', '')
+call roam#init#option('wiki_map_file_to_link', 'util#fname_to_str')
+call roam#init#option('wiki_link_conceal', 0)
 
 " Initialize global commands
 command! RoamBacklinkBuffer call roam#graph#backlink_buffer()
+command! RoamUpdateBacklinkBuffer call roam#graph#update_backlink_buffer()
 
 " Initialize mappings
-nnoremap <silent> <plug>(wiki-backlink-buffer) :WikiBacklinkBuffer<cr>
+nnoremap <silent> <plug>(roam-backlink-buffer) :RoamBacklinkBuffer<cr>
+nnoremap <silent> <plug>(roam-update-backlink-buffer) :RoamUpdateBacklinkBuffer<cr>
+
+" Initialize autocommands
+autocmd BufReadPost *.md call roam#graph#update_backlink_buffer()
 

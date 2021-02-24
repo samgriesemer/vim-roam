@@ -16,8 +16,8 @@
 "
 " Defines a new `BacklinkBuffer` command in plugin/wiki.vim.
 
+let s:blbufnr=''
 
-" NEW FUNCTIONS
 function! roam#graph#backlink_buffer()
   " check for graph attribute in wiki object of current buffer
   if !has_key(b:wiki, 'graph')
@@ -60,25 +60,62 @@ function! roam#graph#backlink_buffer()
     echomsg 'wiki: No other file links to this file'
   else
     let wikiroot = wiki#get_root()
-    execute 'botright vnew '.wikiroot.'/temp.md'
-    setlocal buftype=nofile
-    setlocal filetype=markdown
+    " also check if buffer still open (don't continue if user :q it) 
+    if empty(win_findbuf(s:blbufnr))
+        execute 'botright vnew '.wikiroot.'/temp.md'
+        let s:blbufnr = bufnr('%')
+        setlocal buftype=nofile
+        setlocal filetype=markdown
+    endif
+
     let i = 1
     let cur_page = ''
     for l:link in l:results
         " group same-page results under same header
         if cur_page != l:link.node_from
             let title = call(g:wiki_map_file_to_title, [l:link.node_from])
-            call setline(i, '# '.title.' ([['.title.']])')
+            call setbufline(s:blbufnr, i, '# '.title.' ([['.title.']])')
             let cur_page = l:link.node_from
             let i = i+1
         endif
-        call setline(i, l:link.text)
+        call setbufline(s:blbufnr, i, l:link.text)
         let i = i+len(l:link.text)
-        call setline(i, '')
+        call setbufline(s:blbufnr, i, '')
         let i = i+1
     endfor
+    " clear end of buffer
+    call deletebufline(s:blbufnr, i, '$')
   endif
+endfunction
+
+function! roam#graph#update_backlink_buffer()
+    if (!empty(win_findbuf(s:blbufnr))) && (bufnr('%') != s:blbufnr)
+        call roam#graph#backlink_buffer()
+    endif
+endfunction
+
+function! roam#graph#testli()
+  let [l:root, l:current] = wiki#list#get()
+  if empty(l:current)
+    return []
+  endif
+
+  while v:true
+    let l:start = [l:current.lnum_start, 1]
+    let l:end = [l:current.lnum_end_children(), 1]
+    let l:end[1] = strlen(getline(l:end[0]))
+    let l:linewise = 1
+
+    if l:current.type ==# 'root'
+          "\ || l:start != getpos('''<')[1:2]
+          "\ || l:end[0] != getpos('''>')[1]
+          \ || match(getline(l:start[0]),'\S') == 0
+          \ | break | endif
+
+    let l:current = l:current.parent
+  endwhile
+
+  return [l:start, l:end]
 endfunction
 
 function! s:list_bounds()
@@ -94,8 +131,9 @@ function! s:list_bounds()
     let l:linewise = 1
 
     if l:current.type ==# 'root'
-          \ || l:start != getpos('''<')[1:2]
-          \ || l:end[0] != getpos('''>')[1]
+          "\ || l:start != getpos('''<')[1:2]
+          "\ || l:end[0] != getpos('''>')[1]
+          \ || match(getline(l:start[0]),'\S') == 0
           \ | break | endif
 
     let l:current = l:current.parent
@@ -103,6 +141,8 @@ function! s:list_bounds()
 
   return [l:start, l:end]
 endfunction
+
+
 
 
 " from original plugin
