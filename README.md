@@ -1,16 +1,17 @@
 # Introduction
-Vim-roam is a plugin for networked note management in Vim. The name `vim-roam` takes from
+Vim-roam is a plugin for networked note management in Vim. The name "vim-roam" takes from
 the popular note taking tool [Roam research](https://roamresearch.com), and our goal is to
 implement core features present in Roam (along with other growing note tools like
 [Obsidian.md](https://obsidian.md), [Notion](https://notion.so), etc) in a vanilla Vim
 environment.
 
+## Dependencies
 This plugin builds on the fantastic [wiki.vim](https://github.com/lervag/wiki.vim) plugin,
-which implements a lightweight core for managing a personal wiki in Vim. I maintain a
-separate `wiki.vim` [development fork](https://github.com/samgriesemer/wiki.vim) for
+which implements a lightweight core for managing a personal wiki in Vim. A separate
+`wiki.vim` [development fork](https://github.com/samgriesemer/wiki.vim) is maintained for
 managing low-level changes needed for `vim-roam` functionality. This is purposefully
-separated from the `vim-roam` repo to clearly distinguish the code that falls outside the
-scope of the original `wiki.vim` project.
+separated from the main `vim-roam` repo to clearly distinguish the extended features and
+configuration that fall outside the scope of the original `wiki.vim` project.
 
 ## What does it do
 `vim-roam` makes it easy to maintain a personal wiki on a set of local Markdown files.

@@ -12,18 +12,64 @@
 let rg_base = 'rg --column --line-number --no-heading --color=always --smart-case'
 
 " general fzf search with preview
-function FzfGrepPreview(cmd, pat, loc, qry, bng)
-    call fzf#vim#grep(a:cmd.' '.a:pat.' '.a:loc, 1,
-    \   fzf#vim#with_preview({
+function roam#search#fzf_grep_preview(cmd, pat, loc, qry, prm, nth, bng, snk)
+    let spec = fzf#vim#with_preview({
     \       'options': [
+    \           '--prompt', a:prm,
+    \           '--ansi',
+    \           '--extended',
     \           '--delimiter=:',
-    \           '--with-nth=4..',
-    \           '--nth=1..',
+    \           '--nth='.a:nth,
+    \           '--with-nth=1,2,4..',
     \           '--query='.a:qry,
+    \           '--print-query',
+    \           '--expect='.get(g:, 'wiki_fzf_pages_force_create_key', 'alt-enter'),
     \       ],
     \       'right': '50%'
-    \   }, 'down:50%:wrap'), a:bng)
+    \   }, 'down:50%:wrap')
+
+    call extend(spec, {
+    \       'dir': g:wiki_root,
+    \       'sink*': funcref('s:'.a:snk),
+    \   })
+
+    call fzf#vim#grep(a:cmd.' '.a:pat.' '.a:loc, 1, spec, a:bng)
 endfunction
 
+function! s:accept_line(lines) abort "{{{1
+    " 1st arg: query (partial)
+    " 2nd arg: special key if used, otherwise empty string
+    " 3rd arg: matched line
+    " If no matches, only the first 2 args
+    if len(a:lines) < 2 | return | endif
+    let l:fname = ''
+
+    " if no matches for query or special key used
+    if len(a:lines) == 2 || !empty(a:lines[1])
+        let l:fname = a:lines[0] 
+    else
+        let l:fname = split(a:lines[2], ':')[0]
+    endif
+
+    call wiki#page#open(l:fname)
+endfunction
+
+function! s:accept_page(lines) abort "{{{1
+  " from wiki.vim:
+  " a:lines is a list with two or three elements. Two if there were no matches,
+  " and three if there is one or more matching names. The first element is the
+  " search query; the second is either an empty string or the alternative key
+  " specified by g:wiki_fzf_pages_force_create_key (e.g. 'alt-enter') if this
+  " was pressed; the third element contains the selected item.
+  if len(a:lines) < 2 | return | endif
+
+  if len(a:lines) == 2 || !empty(a:lines[1])
+    call wiki#page#open(a:lines[0])
+    sleep 1
+  else
+    let l:file = split(a:lines[2], ':')[0]
+    execute 'edit ' . l:file
+  endif
+endfunction
 
 
