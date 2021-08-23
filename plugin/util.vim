@@ -94,6 +94,8 @@ function! util#handle_completed_link(lines)
     " handle (presumably) single FZF selection
     let path = join(a:lines)
 
+    " create file?
+
     " get link string for path (assumed relative to wiki root)
     return util#wrap_link(path)
 endfunction

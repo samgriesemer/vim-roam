@@ -17,9 +17,6 @@ else
   finish
 endif
 
-
-let s:plugin_path = escape(expand('<sfile>:p:h:h'), '\')
-
 " Initialize options
 call roam#init#option('wiki_journal', {
       \ 'name' : '',
@@ -36,6 +33,7 @@ call roam#init#option('wiki_map_text_to_link', '')
 call roam#init#option('wiki_map_file_to_link', 'util#fname_to_str')
 call roam#init#option('wiki_map_file_to_text', 'util#fname_to_str')
 call roam#init#option('wiki_link_conceal', 0)
+call roam#init#option('roam_cache_root', expand('~/.cache/vim-roam'))
 call roam#init#option('wiki_mappings_local', {
     \ '<plug>(wiki-graph-find-backlinks)' : '<Leader>wlb',
     \ '<plug>(wiki-link-toggle)' : '<Leader>wlt',
@@ -45,9 +43,38 @@ call roam#init#option('wiki_mappings_local', {
 \ })
 
 
+let s:plugin_path = escape(expand('<sfile>:p:h:h'), '\')
+execute g:roam_pyfile . s:plugin_path . '/vimroam/main.py'
+
+
 " Initialize global commands
-command! RoamBacklinkBuffer call roam#graph#backlink_buffer()
-command! RoamUpdateBacklinkBuffer call roam#graph#update_backlink_buffer()
+"command! RoamBacklinkBuffer call roam#graph#backlink_buffer()
+"command! RoamUpdateBacklinkBuffer call roam#graph#update_backlink_buffer()
+let s:bltoggle = 0
+function! ToggleBacklinkBuffer()
+    if s:bltoggle
+        execute "py3 blbuffer.close()"
+        let s:bltoggle = 0
+    else
+        let file = expand('%:t:r')
+        execute "py3 blbuffer.open('" . file . "')"
+        let s:bltoggle = 1
+    endif
+endfunction
+
+function! UpdateBacklinkBuffer()
+    if s:bltoggle
+        let file = expand('%:t:r')
+        execute "py3 blbuffer.open('" . file . "')"
+    endif
+endfunction
+
+"
+"execute "command! RoamBacklinkBuffer :" . g:roam_py . "blbuffer.open(eval(expand('%:t:r')))"
+command! RoamBacklinkBuffer call ToggleBacklinkBuffer()
+"command! RoamUpdateBacklinkBuffer call roam#graph#update_backlink_buffer()
+"command! RoamBLScan g:roam_py . 'panjar
+"command! RoamBLUpdate g:roam_py . 'panja.A
 
 
 " RoamFzfFiles - search wiki filenames and go to file
@@ -187,7 +214,7 @@ call roam#init#apply_mappings_from_dict(s:mappings, '')
 
 
 " Initialize autocommands
-autocmd BufReadPost *.md call roam#graph#update_backlink_buffer()
+autocmd BufReadPost *.md call UpdateBacklinkBuffer()
 
 
 " Expressions
