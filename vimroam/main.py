@@ -1,9 +1,8 @@
 import vim
 import sys
-from time import sleep
 
-from panja.cache   import Cache
-from panja.graph   import ArticleGraph
+from panja.cache import Cache as RoamCache
+from panja.graph import ArticleGraph
 
 BASE_DIR = vim.eval("s:plugin_path")
 sys.path.insert(0, BASE_DIR)
@@ -46,13 +45,13 @@ from vimroam import bl
 # window with the buffer and set a non-existent buffer number, giving "invalid range" most
 # likely
 
-CACHE_PATH = vim.eval('expand(g:roam_cache_root)')
+ROAM_CACHE_PATH = vim.eval('expand(g:roam_cache_root)')
 
-graph_cache = Cache(
+roam_graph_cache = RoamCache(
     'graph',
-    CACHE_PATH,
+    ROAM_CACHE_PATH,
     lambda: ArticleGraph()
 )
 
-blbuffer = bl.BacklinkBuffer(graph_cache)
+blbuffer = bl.BacklinkBuffer(roam_graph_cache)
 
