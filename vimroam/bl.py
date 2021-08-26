@@ -12,8 +12,6 @@ WIKI_ROOT = vim.eval('expand(g:wiki_root)')
 class BacklinkBuffer():
     def __init__(self, graph_cache, verbose=False):
         self.bufnr = int(vim.eval('bufnr("backlink-buffer.{}", 1)'.format(randint(1,100000))))
-        #vim.command('call setbufvar({}, "&buftype", "nofile")'.format(self.bufnr))
-        #vim.command('call setbufvar({}, "&filetype", "markdown")'.format(self.bufnr))
         self.nbuf = vim.buffers[self.bufnr]
         
         self.graph_cache = graph_cache
@@ -30,7 +28,11 @@ class BacklinkBuffer():
             vim.command('rightb vert {}sb'.format(self.bufnr))
             vim.command('setlocal noswapfile')
             vim.command('setlocal modifiable')
+            #vim.command('filetype plugin off')
             vim.command('setlocal buftype=nofile')
+
+            # a thought to change up ft
+            #vim.command('setlocal filetype=backlink')
             vim.command('setlocal filetype=markdown')
         vim.command('redraw')
 
@@ -74,6 +76,8 @@ class BacklinkBuffer():
                 return False
 
         article = Article(str(path), name, verbose=False)
+        if not article.valid: return False
+
         article.process_structure()
         self.graph.add_article(article)
         return True
@@ -82,6 +86,10 @@ class BacklinkBuffer():
         # full graph update, likely hook to initialization or manual command
         if self.verbose:
             print('Scanning note graph', file=sys.stdout)
+
+        # might want to consider cached files that _dont_ show up when this method is
+        # called? i.e. they've been deleted but are still in the cache, nothing currently
+        # updates these
 
         for note in utils.directory_tree(WIKI_ROOT):
             if self.update_graph_node(note):

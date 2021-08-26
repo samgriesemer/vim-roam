@@ -1,13 +1,8 @@
-import vim
-import sys
 
-from panja.cache import Cache as RoamCache
-from panja.graph import ArticleGraph
+#BASE_DIR = vim.eval("s:plugin_path")
+#sys.path.insert(0, BASE_DIR)
+#from vimroam import bl
 
-BASE_DIR = vim.eval("s:plugin_path")
-sys.path.insert(0, BASE_DIR)
-
-from vimroam import bl
 # can elect to only update backlink pages (based on modified times) when the user requests
 # the backlink buffer i.e. not doing it automatically as they write to files in the wiki.
 # Or you could do this, trying to always keep everything up to date at the earliest
@@ -45,13 +40,46 @@ from vimroam import bl
 # window with the buffer and set a non-existent buffer number, giving "invalid range" most
 # likely
 
-ROAM_CACHE_PATH = vim.eval('expand(g:roam_cache_root)')
+import sys
+import os 
+import argparse
+
+from vimroam.cache import Cache as RoamCache
+from vimroam.graph import Graph as RoamGraph
+from vimroam.note  import Note  as RoamNote
+from vimroam import util
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('wiki', help='wiki root path')
+parser.add_argument('--cache', default='~/.cache/vim-roam/', help='cache root path')
+args = parser.parse_args()
+
+notepath  = os.path.expanduser(args.wiki)
+cachepath = os.path.expanduser(args.cache)
 
 roam_graph_cache = RoamCache(
     'graph',
-    ROAM_CACHE_PATH,
-    lambda: ArticleGraph()
+    cachepath,
+    lambda: RoamGraph()
 )
 
-blbuffer = bl.BacklinkBuffer(roam_graph_cache)
+#blbuffer = bl.BacklinkBuffer(roam_graph_cache)
+def update_graph(self):
+    # full graph update, likely hook to initialization or manual command
+    if self.verbose:
+        print('Scanning note graph', file=sys.stdout)
+
+    # might want to consider cached files that _dont_ show up when this method is
+    # called? i.e. they've been deleted but are still in the cache, nothing currently
+    # updates these
+
+    for note in util.directory_tree(WIKI_ROOT):
+        if self.update_graph_node(note):
+            self.nbuf.append('-> Updating {}'.format(note))
+            
+        #print('-> Updating {}'.format(note), file=sys.stdout)
+
+    # possibly delay this, pack into __del__ perhaps
+    self.graph_cache.write(self.graph)
 

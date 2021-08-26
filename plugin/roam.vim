@@ -47,9 +47,6 @@ let s:plugin_path = escape(expand('<sfile>:p:h:h'), '\')
 execute g:roam_pyfile . s:plugin_path . '/vimroam/main.py'
 
 
-" Initialize global commands
-"command! RoamBacklinkBuffer call roam#graph#backlink_buffer()
-"command! RoamUpdateBacklinkBuffer call roam#graph#update_backlink_buffer()
 let s:bltoggle = 0
 function! ToggleBacklinkBuffer()
     if s:bltoggle
@@ -69,17 +66,13 @@ function! UpdateBacklinkBuffer()
     endif
 endfunction
 
-"
-"execute "command! RoamBacklinkBuffer :" . g:roam_py . "blbuffer.open(eval(expand('%:t:r')))"
-command! RoamBacklinkBuffer call ToggleBacklinkBuffer()
-"command! RoamUpdateBacklinkBuffer call roam#graph#update_backlink_buffer()
-"command! RoamBLScan g:roam_py . 'panjar
-"command! RoamBLUpdate g:roam_py . 'panja.A
 
+" Initialize global commands
+command! RoamBacklinkBuffer call ToggleBacklinkBuffer()
 
 " RoamFzfFiles - search wiki filenames and go to file
 command! -bang -complete=dir RoamFzfFiles
-    \ call fzf#vim#files(g:wiki_root, fzf#vim#with_preview({'right':'50%'}, 'down:50%:wrap'), <bang>0)
+    \ call fzf#vim#files(g:wiki_root, fzf#vim#with_preview({'right':'100'}, 'down:70%:wrap'), <bang>0)
 
 " RoamFzfLines - search lines in all wiki files and go to file. Following FZF
 " session has a prefilled query using the first argument, which is a

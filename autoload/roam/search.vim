@@ -25,8 +25,8 @@ function roam#search#fzf_grep_preview(cmd, pat, loc, qry, prm, nth, bng, snk)
     \           '--print-query',
     \           '--expect='.get(g:, 'wiki_fzf_pages_force_create_key', 'alt-enter'),
     \       ],
-    \       'right': '50%'
-    \   }, 'down:50%:wrap')
+    \       'right': '100'
+    \   }, 'down:70%:wrap')
 
     call extend(spec, {
     \       'dir': g:wiki_root,
@@ -48,10 +48,14 @@ function! s:accept_line(lines) abort "{{{1
     if len(a:lines) == 2 || !empty(a:lines[1])
         let l:fname = a:lines[0] 
     else
-        let l:fname = split(a:lines[2], ':')[0]
+        let l:comp = split(a:lines[2], ':')
+        let l:fname = l:comp[0]
+        let l:lnum  = l:comp[1]
     endif
 
     call wiki#page#open(l:fname)
+    " can use `call cursor(lnum, col)` if get col info
+    execute l:lnum
 endfunction
 
 function! s:accept_page(lines) abort "{{{1
