@@ -43,43 +43,80 @@
 import sys
 import os 
 import argparse
+from pathlib import Path
 
 from vimroam.cache import Cache as RoamCache
 from vimroam.graph import Graph as RoamGraph
 from vimroam.note  import Note  as RoamNote
 from vimroam import util
 
+# For now, can: have BLBuffer object that was be pure vimscript; run pure python calls to
+# local package. for buffer just write the output from the script
 
-parser = argparse.ArgumentParser()
-parser.add_argument('wiki', help='wiki root path')
-parser.add_argument('--cache', default='~/.cache/vim-roam/', help='cache root path')
-args = parser.parse_args()
 
-notepath  = os.path.expanduser(args.wiki)
-cachepath = os.path.expanduser(args.cache)
+def update_graph_node(note, graph, wiki_root):
+    # single file update, hook to write event
+    path = Path(wiki_root, note)
+    name = path.stem
 
-roam_graph_cache = RoamCache(
-    'graph',
-    cachepath,
-    lambda: RoamGraph()
-)
+    if path.suffix != '.md': return False
 
-#blbuffer = bl.BacklinkBuffer(roam_graph_cache)
-def update_graph(self):
-    # full graph update, likely hook to initialization or manual command
-    if self.verbose:
-        print('Scanning note graph', file=sys.stdout)
+    if name in graph.article_map:
+        if path.stat().st_mtime < graph.article_map[name].ctime:
+            return False
 
-    # might want to consider cached files that _dont_ show up when this method is
-    # called? i.e. they've been deleted but are still in the cache, nothing currently
-    # updates these
+    note = RoamNote(str(path), name, verbose=False)
+    if not note.valid: return False
 
-    for note in util.directory_tree(WIKI_ROOT):
-        if self.update_graph_node(note):
-            self.nbuf.append('-> Updating {}'.format(note))
-            
-        #print('-> Updating {}'.format(note), file=sys.stdout)
+    note.process_structure()
+    graph.add_article(note)
+    return True
 
-    # possibly delay this, pack into __del__ perhaps
-    self.graph_cache.write(self.graph)
+def update_graph(graph, wiki_root, verbose=True):
+    write = False
+    if verbose: print('Scanning note graph...', file=sys.stdout)
+    for note in util.directory_tree(wiki_root):
+        if update_graph_node(note, graph, wiki_root):
+            write = True
+            if verbose: print('-> Updating {}'.format(note))
+    return write
 
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('wiki', help='wiki root path')
+    parser.add_argument('--cache', default='~/.cache/vim-roam/', help='cache root path')
+    parser.add_argument('--name', help='note name data to retrieve')
+    parser.add_argument('-v', '--verbose', help='verbosity of logging', action='store_true')
+    parser.add_argument('--no-update', help='no update flag', action='store_true')
+    args = parser.parse_args()
+
+    notepath  = os.path.expanduser(args.wiki)
+    cachepath = os.path.expanduser(args.cache)
+
+    if args.verbose:
+        print('Wiki root: {}'.format(notepath))
+        print('Cache root: {}'.format(cachepath))
+
+    roam_graph_cache = RoamCache(
+        'graph',
+        cachepath,
+        lambda: RoamGraph()
+    )
+
+    if args.verbose: print('Loading note graph...', file=sys.stdout)
+    roam_graph = roam_graph_cache.load()
+
+    if not args.no_update:
+        if update_graph(roam_graph, notepath, args.verbose):
+            if args.verbose: print('Writing note graph...', file=sys.stdout)
+            roam_graph_cache.write(roam_graph)
+
+    if args.name:
+        backlinks = roam_graph.get_backlinks(args.name)
+        for srclist in backlinks.values():
+            title = srclist[0]['ref'].metadata['title']
+
+            print('# {t} ([[{t}]])'.format(t=title))
+            for link in srclist:
+                #print(link['context'].split('\n'))
+                print(link['context'])

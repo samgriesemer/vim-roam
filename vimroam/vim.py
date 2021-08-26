@@ -1,8 +1,12 @@
+import vim
+
 from vimroam.bl import BacklinkBuffer
+
+CACHE_PATH = vim.eval('expand(g:roam_cache_root)')
 
 roam_graph_cache = RoamCache(
     'graph',
-    cachepath,
+    CACHE_PATH,
     lambda: RoamGraph()
 )
 

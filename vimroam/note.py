@@ -3,6 +3,7 @@ from collections import defaultdict
 from datetime import datetime
 
 import pypandoc as pp
+import pandocfilters as pf
 from colorama import Fore
 
 from vimroam import util

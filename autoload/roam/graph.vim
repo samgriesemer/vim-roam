@@ -16,7 +16,7 @@
 "
 " Defines a new `BacklinkBuffer` command in plugin/wiki.vim.
 
-let s:blbufnr=''
+"let s:blbufnr=''
 
 function! roam#graph#backlink_buffer()
   " check for graph attribute in wiki object of current buffer

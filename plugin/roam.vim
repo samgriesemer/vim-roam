@@ -44,31 +44,33 @@ call roam#init#option('wiki_mappings_local', {
 
 
 let s:plugin_path = escape(expand('<sfile>:p:h:h'), '\')
-execute g:roam_pyfile . s:plugin_path . '/vimroam/main.py'
+exec "set path+=".s:plugin_path
+"execute g:roam_pyfile . s:plugin_path . '/vimroam/main.py'
 
 
-let s:bltoggle = 0
-function! ToggleBacklinkBuffer()
-    if s:bltoggle
-        execute "py3 blbuffer.close()"
-        let s:bltoggle = 0
-    else
-        let file = expand('%:t:r')
-        execute "py3 blbuffer.open('" . file . "')"
-        let s:bltoggle = 1
-    endif
-endfunction
-
-function! UpdateBacklinkBuffer()
-    if s:bltoggle
-        let file = expand('%:t:r')
-        execute "py3 blbuffer.open('" . file . "')"
-    endif
-endfunction
+"let s:bltoggle = 0
+"function! ToggleBacklinkBuffer()
+"    if s:bltoggle
+"        execute "py3 blbuffer.close()"
+"        let s:bltoggle = 0
+"    else
+"        let file = expand('%:t:r')
+"        execute "py3 blbuffer.open('" . file . "')"
+"        let s:bltoggle = 1
+"    endif
+"endfunction
+"
+"function! UpdateBacklinkBuffer()
+"    if s:bltoggle
+"        let file = expand('%:t:r')
+"        execute "py3 blbuffer.open('" . file . "')"
+"    endif
+"endfunction
 
 
 " Initialize global commands
-command! RoamBacklinkBuffer call ToggleBacklinkBuffer()
+"command! RoamBacklinkBuffer call ToggleBacklinkBuffer()
+command! RoamBacklinkBuffer call roam#blbuf#toggle()
 
 " RoamFzfFiles - search wiki filenames and go to file
 command! -bang -complete=dir RoamFzfFiles
@@ -207,7 +209,7 @@ call roam#init#apply_mappings_from_dict(s:mappings, '')
 
 
 " Initialize autocommands
-autocmd BufReadPost *.md call UpdateBacklinkBuffer()
+autocmd BufReadPost *.md call roam#blbuf#update()
 
 
 " Expressions
