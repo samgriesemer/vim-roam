@@ -1,0 +1,4 @@
+pypandoc
+pandocfilters
+tqdm
+dill
