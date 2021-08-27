@@ -5,6 +5,30 @@ implement core features present in Roam (along with other growing note tools lik
 [Obsidian.md](https://obsidian.md), [Notion](https://notion.so), etc) in a vanilla Vim
 environment.
 
+The primary goal of this plugin
+
+# Installation
+As mentioned, this plugin is best accompanied with `wiki.vim` as the surrounding wiki
+environment, having many useful navigational mappings, page creation/renaming/updating,
+etc. However, it is not explicitly required. 
+
+```vim
+Plug '3000/asyncrun.vim'
+Plug 'samgriesemer/vim-roam'
+```
+
+You will also need Vim built with Python3 support. You can check this by running `vim
+--version` in your terminal. If you see `+python3` in the shown features, you're all set.
+
+There are then a few Python packages required, which are specified in the
+`requirements.txt` file. Install these with
+
+```bash
+pip3 install --upgrade -r requirements.txt
+```
+
+Also need Pandoc if not shipped with pypandoc
+
 ## Dependencies
 This plugin builds on the fantastic [wiki.vim](https://github.com/lervag/wiki.vim) plugin,
 which implements a lightweight core for managing a personal wiki in Vim. A separate

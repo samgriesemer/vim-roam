@@ -4,6 +4,7 @@ let s:blbufnr = bufnr('backlink-buffer.1234', 1)
 function! roam#blbuf#post_async(n)
     cclose 
     let l:out = system('cd /home/smgr/.vim/plugged/vim-roam/ && python3 -m vimroam.main '.s:wroot.' --no-update --name='.a:n)
+    call bufload('backlink-buffer.1234')
     silent! execute "call deletebufline(".s:blbufnr.", 1, '$')"
     call appendbufline(s:blbufnr, 0, split(l:out, '\n'))
 
@@ -31,6 +32,8 @@ function! roam#blbuf#open(name)
     " TODO: somehow check if we're current updating the graph cache so we don't do it
     " twice when navigating...should be able to do stuff while it's loading
     call asyncrun#run('', {'mode': 'async'}, 'cd /home/smgr/.vim/plugged/vim-roam/ && python3 -m vimroam.main '.s:wroot.' -v')
+    "opting for full term mode?
+    "execute "AsyncRun -mode=term -post=call\\ roam\\#blbuf\\#post_async('".a:name."')  cd /home/smgr/.vim/plugged/vim-roam/ && python3 -m vimroam.main '".s:wroot."' -v'"
 endfunction
 
 function! roam#blbuf#close()
