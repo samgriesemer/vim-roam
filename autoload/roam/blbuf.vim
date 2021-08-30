@@ -45,7 +45,7 @@ function! roam#blbuf#open(name)
 
     if s:run_flag
         "echo "(Currently scanning backlinks, new process not spawned)"
-        call appendbufline(s:blbufnr, 2, 'Page changed to '.a:name.', backlink target still set to original page '.s:cur_name)
+        call appendbufline(s:blbufnr, 1, 'Page changed to '.a:name.', backlink target still set to original page '.s:cur_name)
         call win_gotoid(l:save_win)
         " possibly print target so we know what backlinks _will_ show even if file is
         " changed
