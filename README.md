@@ -1,33 +1,63 @@
 # Introduction
-Vim-roam is a plugin for networked note management in Vim. The name "vim-roam" takes from
-the popular note taking tool [Roam research](https://roamresearch.com), and our goal is to
-implement core features present in Roam (along with other growing note tools like
-[Obsidian.md](https://obsidian.md), [Notion](https://notion.so), etc) in a vanilla Vim
-environment.
+Vim-roam is a Vim plugin for managing a note graph connected via wikilinks. The name
+"vim-roam" takes from the popular note taking tool [Roam
+research](https://roamresearch.com), which is widely considered to have popularized the
+notion of highly interconnected notes and an integrated _backlink_ explorer. The goal of
+this plugin is to implement useful utilities for networked note management in Vim, namely
+maintenance of a link graph and writing context-rich backlink content to a buffer.
 
-The primary goal of this plugin
+Note: this plugin does not intent to replace an outer wiki management plugin such as
+`wiki.vim` or `vimwiki`. It instead aims to complete these plugins by adding a richer
+backlink ecosystem and additional search rules, among other things.
+
+Note$^2$: there many additional ideas for practices and philosophies on my 
+
+
+## Table of contents
+- [Installation](#installation)
+- [Usage](#usage)
+- [Related projects](#related-projects)
+
 
 # Installation
 As mentioned, this plugin is best accompanied with `wiki.vim` as the surrounding wiki
 environment, having many useful navigational mappings, page creation/renaming/updating,
-etc. However, it is not explicitly required. 
+etc. It's also extremely lightweight, and does not interfere with filetype plugins.
+However, it is not explicitly required to use `vim-roam`; so long as you have a directory
+of files that link among themselves using wiki link syntax `[[<link>]]`, Vim-roam should work
+for you.
+
+## Vim
+Using a Vim plugin manager like Plug, installation is simple:
 
 ```vim
 Plug '3000/asyncrun.vim'
 Plug 'samgriesemer/vim-roam'
 ```
 
-You will also need Vim built with Python3 support. You can check this by running `vim
---version` in your terminal. If you see `+python3` in the shown features, you're all set.
+These plugins can be also be installed using Vim's native plugin support:
+
+## Python
+You will need a version of Vim built with Python3 support. You can check this by running
+`vim --version` in your terminal. If you see `+python3` in the shown features, you're all
+set.
 
 There are then a few Python packages required, which are specified in the
-`requirements.txt` file. Install these with
+`requirements.txt` file. Install these globally with
 
 ```bash
 pip3 install --upgrade -r requirements.txt
 ```
 
-Also need Pandoc if not shipped with pypandoc
+If you instead have a Python virtualenv for vim plugin Python packages, you can of course
+install there instead.
+
+## Pandoc
+You may also need a version of Pandoc installed and available on your PATH. check if ships
+with pypandoc
+
+
+# Usage
 
 ## Dependencies
 This plugin builds on the fantastic [wiki.vim](https://github.com/lervag/wiki.vim) plugin,

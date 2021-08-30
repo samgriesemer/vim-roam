@@ -78,7 +78,9 @@ def update_graph(graph, wiki_root, verbose=True):
     for note in util.directory_tree(wiki_root):
         if update_graph_node(note, graph, wiki_root):
             write = True
-            if verbose: print('-> Updating {}'.format(note))
+            if verbose:
+                print('-> Updating {}'.format(note))
+                #sys.stdout.flush()
     return write
 
 if __name__ == '__main__':
@@ -87,6 +89,7 @@ if __name__ == '__main__':
     parser.add_argument('--cache', default='~/.cache/vim-roam/', help='cache root path')
     parser.add_argument('--name', help='note name data to retrieve')
     parser.add_argument('-v', '--verbose', help='verbosity of logging', action='store_true')
+    parser.add_argument('-w', '--write', help='write content output to file', action='store_true')
     parser.add_argument('--no-update', help='no update flag', action='store_true')
     args = parser.parse_args()
 
@@ -111,12 +114,26 @@ if __name__ == '__main__':
             if args.verbose: print('Writing note graph...', file=sys.stdout)
             roam_graph_cache.write(roam_graph)
 
+    content = ''
     if args.name:
         backlinks = roam_graph.get_backlinks(args.name)
         for srclist in backlinks.values():
             title = srclist[0]['ref'].metadata['title']
 
-            print('# {t} ([[{t}]])'.format(t=title))
+            #print('# {t} ([[{t}]])'.format(t=title))
+            tstr = '# {t} ([[{t}]])'.format(t=title)
+            if args.write: content += tstr+'\n'
+            else: print(tstr)
+
             for link in srclist:
                 #print(link['context'].split('\n'))
-                print(link['context'])
+                #print(link['context'])
+                cstr = link['context']
+                if args.write: content += cstr+'\n'
+                else: print(cstr)
+
+    if args.write:
+        with open(str(Path(cachepath, 'backlinkbuffer.1234')), 'w') as f:
+            f.write(content)
+
+
