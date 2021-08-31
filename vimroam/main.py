@@ -44,6 +44,8 @@ import sys
 import os 
 import argparse
 from pathlib import Path
+import logging
+from tqdm import tqdm
 
 from vimroam.cache import Cache as RoamCache
 from vimroam.graph import Graph as RoamGraph
@@ -53,6 +55,10 @@ from vimroam import util
 # For now, can: have BLBuffer object that was be pure vimscript; run pure python calls to
 # local package. for buffer just write the output from the script
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = util.TqdmLoggingHandler()
+logger.addHandler(handler)
 
 def update_graph_node(note, graph, wiki_root):
     # single file update, hook to write event
@@ -74,12 +80,15 @@ def update_graph_node(note, graph, wiki_root):
 
 def update_graph(graph, wiki_root, verbose=True):
     write = False
-    if verbose: print('Scanning note graph...', file=sys.stdout)
-    for note in util.directory_tree(wiki_root):
+    if verbose:
+        #print('Scanning note graph...', file=sys.stdout)
+        logger.info('Scanning note graph...')
+    for note in tqdm(util.directory_tree(wiki_root)):
         if update_graph_node(note, graph, wiki_root):
             write = True
             if verbose:
-                print('-> Updating {}'.format(note))
+                #print('-> Updating {}'.format(note))
+                logger.info('-> Updating {}'.format(note))
                 #sys.stdout.flush()
     return write
 
@@ -106,12 +115,16 @@ if __name__ == '__main__':
         lambda: RoamGraph()
     )
 
-    if args.verbose: print('Loading note graph...', file=sys.stdout)
+    if args.verbose:
+        #print('Loading note graph...', file=sys.stdout)
+        logger.info('Loading note graph...')
     roam_graph = roam_graph_cache.load()
 
     if not args.no_update:
         if update_graph(roam_graph, notepath, args.verbose):
-            if args.verbose: print('Writing note graph...', file=sys.stdout)
+            if args.verbose:
+                #print('Writing note graph...', file=sys.stdout)
+                logger.info('Writing note graph...')
             roam_graph_cache.write(roam_graph)
 
     content = ''

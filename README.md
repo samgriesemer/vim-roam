@@ -6,9 +6,9 @@ notion of highly interconnected notes and an integrated _backlink_ explorer. The
 this plugin is to implement useful utilities for networked note management in Vim, namely
 maintenance of a link graph and writing context-rich backlink content to a buffer.
 
-Note: this plugin does not intent to replace an outer wiki management plugin such as
-`wiki.vim` or `vimwiki`. It instead aims to complete these plugins by adding a richer
-backlink ecosystem and additional search rules, among other things.
+Note: this plugin does not intend to replace an outer wiki management plugin such as
+`wiki.vim`. It instead aims to complement these plugins by adding a richer backlink
+ecosystem and additional search rules, among other things.
 
 Note$^2$: there many additional ideas for practices and philosophies on my 
 
@@ -31,7 +31,7 @@ for you.
 Using a Vim plugin manager like Plug, installation is simple:
 
 ```vim
-Plug '3000/asyncrun.vim'
+Plug 'skywind3000/asyncrun.vim'
 Plug 'samgriesemer/vim-roam'
 ```
 
@@ -53,11 +53,27 @@ If you instead have a Python virtualenv for vim plugin Python packages, you can 
 install there instead.
 
 ## Pandoc
-You may also need a version of Pandoc installed and available on your PATH. check if ships
+You may also need the current latest version of Pandoc (v2.14.1, link) installed and available on your PATH. check if ships
 with pypandoc
 
 
 # Usage
+The primary backlink toggle function is `:ToggleBacklinkBuffer`, and by default mapped to
+`<Plug>wb`. Calling this command does the following:
+
+- A window for the buffer is created, vertically splitting the current view. If a
+  `&textwidth` is set, this new window is set to have have a width equivalent to the
+  user's textwidth (along with some padding).
+- The `asycnrun` plugin is then used to asynchronously call a Python script
+  (`vimroam.main`) to build a note graph of all files in the wiki root according to
+  interconnecting wikilinks. This graph is cached at the specified cache root (default
+  `~/.cache/vim-roam`). The initial scan of a particularly large note directory can take
+  some time, possibly up to a few minutes depending on your machine. 
+- The name of the buffer from which the command was executed is used to query this graph,
+  and the backlink content for that file is written to the backlink buffer.
+
+# Implementation details
+
 
 ## Dependencies
 This plugin builds on the fantastic [wiki.vim](https://github.com/lervag/wiki.vim) plugin,

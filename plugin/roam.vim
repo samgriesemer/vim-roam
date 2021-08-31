@@ -48,25 +48,6 @@ exec "set path+=".s:plugin_path
 "execute g:roam_pyfile . s:plugin_path . '/vimroam/main.py'
 
 
-"let s:bltoggle = 0
-"function! ToggleBacklinkBuffer()
-"    if s:bltoggle
-"        execute "py3 blbuffer.close()"
-"        let s:bltoggle = 0
-"    else
-"        let file = expand('%:t:r')
-"        execute "py3 blbuffer.open('" . file . "')"
-"        let s:bltoggle = 1
-"    endif
-"endfunction
-"
-"function! UpdateBacklinkBuffer()
-"    if s:bltoggle
-"        let file = expand('%:t:r')
-"        execute "py3 blbuffer.open('" . file . "')"
-"    endif
-"endfunction
-
 
 " Initialize global commands
 "command! RoamBacklinkBuffer call ToggleBacklinkBuffer()

@@ -15,8 +15,14 @@ function! roam#blbuf#post_async(n)
     silent! execute "call deletebufline(".s:blbufnr.", 1, '$')"
 
     " shifts file down when writing line 0
-    call appendbufline(s:blbufnr, 1, split(l:out, '\n'))
+    call appendbufline(s:blbufnr, 1, ['== Backlinks for '.a:n.' ==', ''])
     silent! execute "call deletebufline(".s:blbufnr.", 1)"
+
+    if empty(trim(l:out))
+        let l:out = 'No backlinks found for '.a:n
+    endif
+
+    call appendbufline(s:blbufnr, 2, split(l:out, '\n'))
 
     " unset run flag
     let s:run_flag = 0
@@ -28,7 +34,7 @@ function! roam#blbuf#open(name)
     if empty(l:win_list)
         execute 'rightb vert '.s:blbufnr.'sb'
         if str2nr(&textwidth) > 0
-            execute 'vertical resize '.&textwidth
+            execute 'vertical resize '.string(str2nr(&textwidth)+8)
         endif
         setlocal noswapfile
         setlocal modifiable
