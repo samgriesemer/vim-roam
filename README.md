@@ -8,9 +8,17 @@ maintenance of a link graph and writing context-rich backlink content to a buffe
 
 Note: this plugin does not intend to replace an outer wiki management plugin such as
 `wiki.vim`. It instead aims to complement these plugins by adding a richer backlink
-ecosystem and additional search rules, among other things.
+ecosystem and additional search rules, among other things. As of right now, this plugin
+requires `wiki.vim` (although at some point this dependency may be be removed).
 
-Note$^2$: there many additional ideas for practices and philosophies on my 
+Note$^2$: while this plugin is part of my primary Vim setup (and runs smoothly on my
+system), it is still in early development and may not work perfectly for you. You may or
+may not experience unexpected behavior depending on your filetypes or note syntax. The
+plugin also does not have the level of configuration I would like at this time. While
+large bugs will be fixed as they're uncovered and the option set will mature in the
+future, 
+
+Note$^3$: there many additional ideas for practices and philosophies on my 
 
 
 ## Table of contents
@@ -72,8 +80,7 @@ The primary backlink toggle function is `:ToggleBacklinkBuffer`, and by default 
 - The name of the buffer from which the command was executed is used to query this graph,
   and the backlink content for that file is written to the backlink buffer.
 
-# Implementation details
-
+## Note syntax
 
 ## Dependencies
 This plugin builds on the fantastic [wiki.vim](https://github.com/lervag/wiki.vim) plugin,
