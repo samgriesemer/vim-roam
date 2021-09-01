@@ -9,11 +9,8 @@
 if has("python3")
   let g:roam_py='py3 '
   let g:roam_pyfile='py3file '
-elseif has("python")
-  let g:roam_py='py '
-  let g:roam_pyfile='pyfile '
 else
-  echoerr "vim-roam requires Vim compiled with the Python support."
+  echoerr "vim-roam requires Vim compiled with the Python3 support."
   finish
 endif
 
@@ -43,14 +40,13 @@ call roam#init#option('wiki_mappings_local', {
 \ })
 
 
-let s:plugin_path = escape(expand('<sfile>:p:h:h'), '\')
-exec "set path+=".s:plugin_path
+"let s:plugin_path = escape(expand('<sfile>:p:h:h'), '\')
+"exec "set path+=".s:plugin_path
 "execute g:roam_pyfile . s:plugin_path . '/vimroam/main.py'
 
 
 
 " Initialize global commands
-"command! RoamBacklinkBuffer call ToggleBacklinkBuffer()
 command! RoamBacklinkBuffer call roam#blbuf#toggle()
 
 " RoamFzfFiles - search wiki filenames and go to file
@@ -190,7 +186,7 @@ call roam#init#apply_mappings_from_dict(s:mappings, '')
 
 
 " Initialize autocommands
-autocmd BufReadPost *.md call roam#blbuf#update()
+"autocmd BufReadPost *.md call roam#blbuf#update()
 
 
 " Expressions

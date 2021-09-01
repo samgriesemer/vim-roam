@@ -11,7 +11,7 @@ let s:blbufnr = bufnr('backlink-buffer.1234', 1)
 
 function! roam#blbuf#post_async(n)
     let l:out = system('cd '.s:plugin_path.' && python3 -m vimroam.main '.s:wroot.' --no-update --name='.a:n)
-    call bufload('backlink-buffer.1234')
+    "call bufload('backlink-buffer.1234')
     silent! execute "call deletebufline(".s:blbufnr.", 1, '$')"
 
     " shifts file down when writing line 0

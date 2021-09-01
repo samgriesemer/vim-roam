@@ -1,8 +1,3 @@
-
-#BASE_DIR = vim.eval("s:plugin_path")
-#sys.path.insert(0, BASE_DIR)
-#from vimroam import bl
-
 # can elect to only update backlink pages (based on modified times) when the user requests
 # the backlink buffer i.e. not doing it automatically as they write to files in the wiki.
 # Or you could do this, trying to always keep everything up to date at the earliest
@@ -50,14 +45,14 @@ from tqdm import tqdm
 from vimroam.cache import Cache as RoamCache
 from vimroam.graph import Graph as RoamGraph
 from vimroam.note  import Note  as RoamNote
-from vimroam import util
+from vimroam import util as rutil
 
 # For now, can: have BLBuffer object that was be pure vimscript; run pure python calls to
 # local package. for buffer just write the output from the script
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-handler = util.TqdmLoggingHandler()
+handler = rutil.TqdmLoggingHandler()
 logger.addHandler(handler)
 
 def update_graph_node(note, graph, wiki_root):
@@ -83,7 +78,7 @@ def update_graph(graph, wiki_root, verbose=True):
     if verbose:
         #print('Scanning note graph...', file=sys.stdout)
         logger.info('Scanning note graph...')
-    for note in tqdm(util.directory_tree(wiki_root)):
+    for note in tqdm(rutil.directory_tree(wiki_root)):
         if update_graph_node(note, graph, wiki_root):
             write = True
             if verbose:

@@ -4,17 +4,19 @@ Vim-roam is a Vim plugin for managing a note graph connected via wikilinks. The 
 research](https://roamresearch.com), which is widely considered to have popularized the
 notion of highly interconnected notes and an integrated _backlink_ explorer. The goal of
 this plugin is to implement useful utilities for networked note management in Vim, namely
-maintenance of a link graph and writing context-rich backlink content to a buffer.
+maintenance of a link graph and writing context-rich backlink content dynamically to a
+buffer.
 
 Note: this plugin does not intend to replace an outer wiki management plugin such as
 `wiki.vim`. It instead aims to complement these plugins by adding a richer backlink
 ecosystem and additional search rules, among other things. As of right now, this plugin
-requires `wiki.vim` (although at some point this dependency may be be removed).
+requires `wiki.vim` (although at some point this dependency may be be removed). This
+plugin has _not_ been tested with [vimwiki](https://github.com/vimwiki/vimwiki).
 
-Note$^2$: while this plugin is part of my primary Vim setup (and runs smoothly on my
-system), it is still in early development and may not work perfectly for you. You may or
-may not experience unexpected behavior depending on your filetypes or note syntax. The
-plugin also does not have the level of configuration I would like at this time. While
+Note$^2$: while this plugin is part of my own note taking setup in Vim (and runs smoothly
+on my system), it is still in early development and may not work perfectly for you. You
+may or may not experience unexpected behavior depending on your filetypes or note syntax.
+The plugin also does not have the level of configuration I would like at this time. While
 large bugs will be fixed as they're uncovered and the option set will mature in the
 future, 
 
@@ -28,12 +30,12 @@ Note$^3$: there many additional ideas for practices and philosophies on my
 
 
 # Installation
-As mentioned, this plugin is best accompanied with `wiki.vim` as the surrounding wiki
+As mentioned, this plugin requires `wiki.vim` as the surrounding wiki
 environment, having many useful navigational mappings, page creation/renaming/updating,
 etc. It's also extremely lightweight, and does not interfere with filetype plugins.
 However, it is not explicitly required to use `vim-roam`; so long as you have a directory
-of files that link among themselves using wiki link syntax `[[<link>]]`, Vim-roam should work
-for you.
+of files that link among themselves using wiki link syntax `[[<link>]]`, Vim-roam should
+work for you.
 
 ## Vim
 Using a Vim plugin manager like Plug, installation is simple:
