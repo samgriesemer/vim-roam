@@ -77,29 +77,26 @@ quite easily; see the linked PyPI page.
 
 # Read before using
 As of right now, `vim-roam` only works with the Markdown filetype. This is because
-Pandoc's `commonmark` parser is used to get block-level context around wikilinks. This
-said, the Markdown requirement may be removed in the near future, as the parser only
+Pandoc's `commonmark` parser is used to get block-level context surrounding wikilinks.
+This said, the Markdown requirement may be removed in the near future, as the parser only
 interfaces with basic lists, headers, and paragraph objects which are common across many
 wiki syntax variants.
 
 ## Basic options
-You will need to specify the path to your root wiki directory via the `g:roam_wiki_root`
-option in your `.vimrc`. This tells vim-roam where to recursively scan for files when
-indexing the link graph. Note that you don't need to set this option if you've already set
-a `g:wiki_root` with wiki.vim.
-
-You can also override the default cache path (set to `~/.cache/vim-roam`) with the
-`g:wiki_cache_root` option.
-
-You can also control the default mappings vim-roam will set using the
-`g:roam_mappings_use_defaults` and `g:roam_mappings_global` options:
-
-- `g:roam_mappings_use_defaults`: if set to 0, none of the default mappings will be set.
-  You can see the three mappings that are set by default in the `plugin/roam.vim` file.
-- `g:roam_mappings_global`: this option works exactly the same as its [wiki.vim
-  analog](https://github.com/lervag/wiki.vim/blob/master/doc/wiki.txt#L552). If a
-  dictionary of mappings is set to this variable, they will override the global mappings,
-  regardless of the value of `g:roam_mappings_use_defaults`.
+- You will need to specify the path to your root wiki directory via the `g:roam_wiki_root`
+  option in your `.vimrc`. This tells vim-roam where to recursively scan for files when
+  indexing the link graph. Note that you don't need to set this option if you've already
+  set a `g:wiki_root` with wiki.vim.
+- You can also override the default cache path (set to `~/.cache/vim-roam`) with the
+  `g:wiki_cache_root` option.
+- You can control the default mappings vim-roam will set using the
+  `g:roam_mappings_use_defaults` and `g:roam_mappings_global` options:
+    * `g:roam_mappings_use_defaults`: if set to 0, none of the default mappings will be set.
+      You can see the three mappings that are set by default in the `plugin/roam.vim` file.
+    * `g:roam_mappings_global`: this option works exactly the same as its [wiki.vim
+      analog](https://github.com/lervag/wiki.vim/blob/master/doc/wiki.txt#L552). If a
+      dictionary of mappings is set to this variable, they will override the global mappings,
+      regardless of the value of `g:roam_mappings_use_defaults`.
 
 
 ## Link syntax
@@ -132,7 +129,7 @@ Here's a link to a [[long file name]]
 
 Since vim-roam's backlink graph will index the link name as-is, the filename must first be
 transformed into the link text before querying backlink results. The `roam_file2link`
-function will do this automatically when set. When the links and filenames are the same,
+function will do this automatically when set. When the links use filenames directly,
 you don't need to worry about this option.
 
 ## Working with `wiki.vim`
