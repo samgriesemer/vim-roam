@@ -1,4 +1,11 @@
-let s:wroot = expand(g:wiki_root)
+" A networked note management plugin for Vim
+"
+" Maintainer: Sam Griesemer
+" Email:      samgriesemer@gmail.com
+"
+
+
+let s:wroot = expand(g:roam_wiki_root)
 let s:croot = expand(g:roam_cache_root)
 let s:plugin_path = escape(expand('<sfile>:p:h:h:h'), '\')
 
@@ -6,12 +13,15 @@ let s:run_flag = 0
 let s:cur_name = ''
 
 " probably not best with slash, but should work
-"let s:blbufnr = bufnr(s:croot.'/backlinkbuffer.1234', 1)
-let s:blbufnr = bufnr('backlink-buffer.1234', 1)
+let s:blbufnr = bufnr('backlink.buffer', 1)
 
 function! roam#blbuf#post_async(n)
-    let l:out = system('cd '.s:plugin_path.' && python3 -m vimroam.main '.s:wroot.' --no-update --name='.a:n)
-    "call bufload('backlink-buffer.1234')
+    let l:name = a:n
+    if !empty(g:roam_file2link)
+        let l:name = call(g:roam_file2link, [a:n])
+    endif
+
+    let l:out = system('cd '.s:plugin_path.' && python3 -m vimroam.main '.s:wroot.' --no-update --name="'.l:name.'"')
     silent! execute "call deletebufline(".s:blbufnr.", 1, '$')"
 
     " shifts file down when writing line 0

@@ -1,5 +1,5 @@
 "
-" search.vim: search methods and commands for general purpose use
+" search.vim: search method utilities
 "
 " Author: Sam Griesemer
 "
@@ -29,7 +29,7 @@ function roam#search#fzf_grep_preview(cmd, pat, loc, qry, prm, nth, bng, snk)
     \   }, 'down:70%:wrap')
 
     call extend(spec, {
-    \       'dir': g:wiki_root,
+    \       'dir': g:roam_wiki_root,
     \       'sink*': funcref('s:'.a:snk),
     \   })
 

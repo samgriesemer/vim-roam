@@ -58,7 +58,9 @@ logger.addHandler(handler)
 def update_graph_node(note, graph, wiki_root):
     # single file update, hook to write event
     path = Path(wiki_root, note)
-    name = path.stem
+    #name = path.stem
+    # or
+    name = str(Path(note).with_suffix(''))
 
     if path.suffix != '.md': return False
 
@@ -67,7 +69,7 @@ def update_graph_node(note, graph, wiki_root):
             return False
 
     note = RoamNote(str(path), name, verbose=False)
-    if not note.valid: return False
+    #if not note.valid: return False
 
     note.process_structure()
     graph.add_article(note)
@@ -76,15 +78,12 @@ def update_graph_node(note, graph, wiki_root):
 def update_graph(graph, wiki_root, verbose=True):
     write = False
     if verbose:
-        #print('Scanning note graph...', file=sys.stdout)
         logger.info('Scanning note graph...')
     for note in tqdm(rutil.directory_tree(wiki_root)):
         if update_graph_node(note, graph, wiki_root):
             write = True
             if verbose:
-                #print('-> Updating {}'.format(note))
                 logger.info('-> Updating {}'.format(note))
-                #sys.stdout.flush()
     return write
 
 if __name__ == '__main__':
@@ -111,14 +110,12 @@ if __name__ == '__main__':
     )
 
     if args.verbose:
-        #print('Loading note graph...', file=sys.stdout)
         logger.info('Loading note graph...')
     roam_graph = roam_graph_cache.load()
 
     if not args.no_update:
         if update_graph(roam_graph, notepath, args.verbose):
             if args.verbose:
-                #print('Writing note graph...', file=sys.stdout)
                 logger.info('Writing note graph...')
             roam_graph_cache.write(roam_graph)
 
@@ -126,22 +123,22 @@ if __name__ == '__main__':
     if args.name:
         backlinks = roam_graph.get_backlinks(args.name)
         for srclist in backlinks.values():
-            title = srclist[0]['ref'].metadata['title']
+            ref = srclist[0]['ref']
+            title = ref.metadata.get('title')
+            if title is None:
+                title = ref.name
 
-            #print('# {t} ([[{t}]])'.format(t=title))
-            tstr = '# {t} ([[{t}]])'.format(t=title)
+            tstr = '# {t} ([[{n}]])'.format(t=title, n=ref.name)
             if args.write: content += tstr+'\n'
             else: print(tstr)
 
             for link in srclist:
-                #print(link['context'].split('\n'))
-                #print(link['context'])
                 cstr = link['context']
                 if args.write: content += cstr+'\n'
                 else: print(cstr)
 
     if args.write:
-        with open(str(Path(cachepath, 'backlinkbuffer.1234')), 'w') as f:
+        with open(str(Path(cachepath, 'backlink.buffer')), 'w') as f:
             f.write(content)
 
 

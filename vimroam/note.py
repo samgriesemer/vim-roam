@@ -166,7 +166,7 @@ class Note:
 
     def process_linkdata(self):
         links = re.finditer(
-            pattern=r'\[\[([^\]`]*)\]\]',
+            pattern=r'\[\[(?:[^\]]*\||)([^\]]*?)(?:#[^\]]*)?\]\]',
             string=self.raw_content
         )
 
@@ -177,7 +177,8 @@ class Note:
             start = m.start()
             line = self.raw_content.count('\n', 0, start) +1
             col = start - self.raw_content.rfind('\n', 0, start)
-            name = util.title_to_fname(m.group(1))
+            #name = util.title_to_fname(m.group(1))
+            name = m.group(1)
 
             text = '(will be removed)'
             header = ''
@@ -202,14 +203,13 @@ class Note:
 
     def process_links(self, string):
         links = re.findall(
-            pattern=r'\[\[([^\]`]*)\]\]',
+            pattern=r'\[\[(?:[^\]]*\||)([^\]]*?)(?:#[^\]]*)?\]\]',
             string=string
         )
 
         lcounts = defaultdict(int)
         for link in links:
-            l = util.title_to_fname(link)
-            lcounts[l] += 1
+            lcounts[link] += 1
 
         return lcounts
 
