@@ -12,7 +12,7 @@
 let rg_base = 'rg --column --line-number --no-heading --color=always --smart-case'
 
 " general fzf search with preview
-function roam#search#fzf_grep_preview(cmd, pat, loc, qry, prm, nth, bng, snk)
+function roam#search#fzf_grep_preview(cmd, pat, loc, qry, prm, nth, bng, pny, snk, ...)
     let spec = fzf#vim#with_preview({
     \       'options': [
     \           '--prompt', a:prm,
@@ -24,9 +24,24 @@ function roam#search#fzf_grep_preview(cmd, pat, loc, qry, prm, nth, bng, snk)
     \           '--query='.a:qry,
     \           '--print-query',
     \           '--expect='.get(g:, 'wiki_fzf_pages_force_create_key', 'alt-enter'),
-    \       ],
-    \       'right': '100'
-    \   }, 'down:70%:wrap')
+    \       ]})
+
+    "       'right': '100'
+    "   }, 'down:70%:wrap')
+    
+    if a:pny
+        call add(spec.options, '--phony')
+    endif
+
+    if a:0 > 0
+        "let spec = extend(spec, a:1)
+        let pos = index(spec['options'], '--preview')
+        let spec.options[pos+1] = a:1
+    endif
+    if a:0 > 1
+        let pos = index(spec['options'], '--bind')
+        let spec.options[pos+1] = a:2
+    end
 
     call extend(spec, {
     \       'dir': g:roam_wiki_root,
@@ -45,13 +60,34 @@ function! s:accept_line(lines) abort "{{{1
     let l:fname = ''
 
     " if no matches for query or special key used
+    " ignore special key for now since it seems phony only outputs 2 params + we dont care
+    " about special handling on lies
     if len(a:lines) == 2 || !empty(a:lines[1])
-        let l:fname = a:lines[0] 
-    else
-        let l:comp = split(a:lines[2], ':')
-        let l:fname = l:comp[0]
-        let l:lnum  = l:comp[1]
+        let l:fname = a:lines[0]
+        return
+        "let l:comp = split(a:lines[1], ':')
     endif
+
+    let l:comp = split(a:lines[2], ':')
+    let l:fname = l:comp[0]
+    let l:lnum  = l:comp[1]
+    let l:page = 1
+
+    " for certain docs rga will place "Page x" within doc preview, giving page number in
+    " match line
+    if len(l:comp) >= 4
+        if match(l:comp[3], '^Page \d\+$') == 0
+            let l:page = substitute(l:comp[3], '^Page \(\d\+\)$', '\1', '')
+        endif
+    endif
+
+    try
+        if call(get(g:, 'wiki_file_handler', ''), [], {'path':l:fname,'page':l:page})
+            return
+        endif
+    catch /E117:/
+      " Pass
+    endtry
 
     call wiki#page#open(l:fname)
     " can use `call cursor(lnum, col)` if get col info
@@ -68,12 +104,20 @@ function! s:accept_page(lines) abort "{{{1
   if len(a:lines) < 2 | return | endif
 
   if len(a:lines) == 2 || !empty(a:lines[1])
-    call wiki#page#open(a:lines[0])
-    sleep 1
+    " create new page with query
+    let l:target = a:lines[0]
   else
-    let l:file = split(a:lines[2], ':')[0]
-    execute 'edit ' . l:file
+    let l:target = a:lines[2]
+    try
+        if call(get(g:, 'wiki_file_handler', ''), [], {'path':l:target})
+            return
+        endif
+    catch /E117:/
+      " Pass
+    endtry
   endif
+
+  call wiki#page#open(l:target)
 endfunction
 
 

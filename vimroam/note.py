@@ -121,8 +121,8 @@ class Note:
                 v = value if key == 'BulletList' else value[1]
 
                 for item in v:
-                    pos   = item[0]['c'][0][2][0][1].split('-')
-                    start = pos[0][1:]
+                    pos   = item[0]['c'][0][2][0][1].split('@')[-1].split('-')
+                    start = pos[0]
                     end   = pos[-1]
 
                     sl, sc = map(int, start.split(':'))
@@ -142,8 +142,8 @@ class Note:
                         tree[i] = obj
 
             if key == 'Para':
-                start = value[0]['c'][0][2][0][1].split('-')[0][1:]
-                end   = value[-1]['c'][0][2][0][1].split('-')[-1]
+                start = value[0]['c'][0][2][0][1].split('@')[-1].split('-')[0]
+                end   = value[-1]['c'][0][2][0][1].split('@')[-1].split('-')[-1]
 
                 sl, sc = map(int, start.split(':'))
                 el, ec = map(int, end.split(':'))
