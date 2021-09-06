@@ -5,10 +5,10 @@
 
 function! roam#init#option(name, default) abort " {{{1
   let l:option = 'g:' . a:name
-  let {l:option} = a:default
-
-  if type(a:default) == type({})
-    call roam#init#extend_recursive({l:option}, a:default, 'keep')
+  if !exists(l:option)
+    let {l:option} = a:default
+  elseif type(a:default) == type({})
+    call wiki#u#extend_recursive({l:option}, a:default, 'keep')
   endif
 endfunction
 
