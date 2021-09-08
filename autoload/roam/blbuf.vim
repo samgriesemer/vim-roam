@@ -104,17 +104,22 @@ endfunction
 let s:bltoggle = 0
 function! roam#blbuf#toggle()
     if s:bltoggle
-        call roam#blbuf#close()
         let s:bltoggle = 0
+        call roam#blbuf#close()
     else
-        call roam#blbuf#open(expand('%:t:r'))
         let s:bltoggle = 1
+        call roam#blbuf#update()
     endif
 endfunction
 
 function! roam#blbuf#update()
     if s:bltoggle
-        call roam#blbuf#open(expand('%:t:r'))
+        let l:mlist = matchlist(expand('%:p:r'), expand(g:roam_wiki_root).'/\?\(.*\)')
+        if empty(l:mlist)
+            echo "Page not under wiki root."
+            return
+        endif
+        call roam#blbuf#open(l:mlist[1])
     endif
 endfunction
 

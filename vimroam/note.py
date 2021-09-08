@@ -167,6 +167,7 @@ class Note:
     def process_linkdata(self):
         links = re.finditer(
             pattern=r'\[\[(?:[^\]]*\||)([^\]]*?)(?:#[^\]]*)?\]\]',
+            # should probably be \[\[([^\]]*?)(\|[^\]]*?)?(#[^\]]*)?\]\]
             string=self.raw_content
         )
 
