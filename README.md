@@ -13,6 +13,20 @@ managing low-level changes needed for `vim-roam` functionality. This is purposef
 separated from the main `vim-roam` repo to clearly distinguish the extended features and
 configuration that fall outside the scope of the original `wiki.vim` project.
 
+## Installation
+
+### Required vim packages
+
+- `samgriesemer/vim-roam`
+- `samgriesemer/wiki.vim`
+
+### Required python modules
+
+- [`panja`](https://github.com/samgriesemer/panja)
+- `dill` 
+- `pandocfilters` 
+- `misaka`
+
 ## What does it do
 `vim-roam` makes it easy to maintain a personal wiki on a set of local Markdown files.
 Most of this is enabled by the core `wiki.vim` functionality (see their
