@@ -23,7 +23,7 @@ function roam#search#fzf_grep_preview(cmd, pat, loc, qry, prm, nth, bng, pny, sn
     \           '--with-nth=1,2,4..',
     \           '--query='.a:qry,
     \           '--print-query',
-    \           '--expect='.get(g:, 'wiki_fzf_pages_force_create_key', 'alt-enter'),
+    \           '--expect=ctrl-x,ctrl-v,'.get(g:, 'wiki_fzf_pages_force_create_key', 'alt-enter'),
     \       ]})
 
     "       'right': '100'
@@ -95,29 +95,54 @@ function! s:accept_line(lines) abort "{{{1
 endfunction
 
 function! s:accept_page(lines) abort "{{{1
-  " from wiki.vim:
-  " a:lines is a list with two or three elements. Two if there were no matches,
-  " and three if there is one or more matching names. The first element is the
-  " search query; the second is either an empty string or the alternative key
-  " specified by g:wiki_fzf_pages_force_create_key (e.g. 'alt-enter') if this
-  " was pressed; the third element contains the selected item.
-  if len(a:lines) < 2 | return | endif
+    " from wiki.vim:
+    " a:lines is a list with two or three elements. Two if there were no matches,
+    " and three if there is one or more matching names. The first element is the
+    " search query; the second is either an empty string or the alternative key
+    " specified by g:wiki_fzf_pages_force_create_key (e.g. 'alt-enter') if this
+    " was pressed; the third element contains the selected item.
+    if len(a:lines) < 2 | return | endif
 
-  if len(a:lines) == 2 || !empty(a:lines[1])
-    " create new page with query
-    let l:target = a:lines[0]
-  else
-    let l:target = a:lines[2]
-    try
-        if call(get(g:, 'wiki_file_handler', ''), [], {'path':l:target})
-            return
+    let l:target = ''
+    let l:cmd = ''
+
+    if len(a:lines) == 2
+        " no matches, set page text to query text
+        let l:target = a:lines[0]
+    else
+        " handle specific keys
+        let l:target = a:lines[2]
+
+        if a:lines[1] == 'ctrl-x'
+            " regular vim split
+            let l:cmd = 'split'
+
+        elseif a:lines[1] == 'ctrl-v'
+            " vertical vim split
+            let l:cmd = 'vsplit'
+
+        elseif !empty(a:lines[1])
+            " some other key recognized, set to query
+            let l:target = a:lines[0]
+
+        else
+            " regular match, first pass through wiki.vim's file_handler
+            try
+                if call(get(g:, 'wiki_file_handler', ''), [], {'path':l:target})
+                    return
+                endif
+            catch /E117:/
+              " Pass
+            endtry
         endif
-    catch /E117:/
-      " Pass
-    endtry
-  endif
-
-  call wiki#page#open(l:target)
+    endif
+    
+    " finally open with wiki.vim, optionally w command
+    if !empty(l:cmd)
+        call wiki#page#open(l:target, l:cmd)
+    else
+        call wiki#page#open(l:target)
+    endif
 endfunction
 
 

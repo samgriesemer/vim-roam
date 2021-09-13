@@ -164,8 +164,8 @@ mapped to `<leader>wb`. Calling this command does the following:
   and show backlinks for the file you're currently editing. As changes are made to the
   wiki files, vim-roam will automatically re-index new content to ensure backlinks remain
   up to date. If your wiki files change outside of vim, the next time you open the
-  backlink buffer only those files that changed since their previous cache time will be
-  updated.
+  backlink buffer only those files that have changed since their previous cache time will
+  be updated.
 
 
 # Extensions
