@@ -19,7 +19,7 @@ guaranteed to work with; it has _not_ been tested with
 runs smoothly on my system), it is still in early development and may not work perfectly
 for you. You may or may not experience unexpected behavior depending on your filetypes or
 note syntax. The plugin also does not have the level of configuration I would like at this
-time, meaning it may not be easy to integrate the plugin easily through available options.
+time, meaning it may not be easy to incorporate the plugin using the available options.
 While large bugs will be fixed as they're uncovered and the configuration will mature in
 the future, do not expect things to work perfectly out of the box in its current state. If
 you have any feedback/suggestions/bugs/etc, please feel free to open an issue or initiate
@@ -30,7 +30,7 @@ a pull request. Contributions are very much welcome!
 - [Demo](#demo)
 - [Read before using](#read-before-using)
 - [Usage](#usage)
-- [Related projects](#related-projects)
+- [Extensions](#extensions)
 
 
 # Installation
@@ -120,7 +120,7 @@ the following:
 
 ```md
 [[<file name>]]
-[[<display name>|<file name>]]
+[[<file name>|<display name>]]
 [[<file name>#<anchor>]]
 ```
 
@@ -176,6 +176,12 @@ are a number of reasons why Vim-roam may be not be for you:
   `wiki.vim` offer some backlink handling on their own. This is probably sufficient for
   most users, and you should look into what these plugins offer before deciding to use
   vim-roam.
+- Vim-roam can be slow, or at least the initial indexing processing, depending on your
+  system or wiki size. Vim-roam uses a filter over Pandoc's `commonmark` parser to extract
+  positional information inside the wiki documents, which can take time for large files or
+  large wikis. Luckily, it's trivial to amortize the conversion costs after initially
+  indexing notes, so bulk processing only takes place once. Still, this can take some
+  time; on my system it takes roughly 3 minutes to build the index for ~2500 pages.
 
 # Usage
 The primary command exposed by vim-roam is `:ToggleBacklinkBuffer`, and is by default
@@ -201,16 +207,35 @@ mapped to `<leader>wb`. Calling this command does the following:
 
 
 # Extensions
+Even if you don't use vim-roam's backlink functionality, some of the available "extension"
+plugins listed below might be useful. These plugins were created with vim-roam in mind,
+but are mostly independent of the plugin beyond overlapping configuration (i.e. your
+vim-roam settings are re-used in extension plugins).
 
-## Recommend Roam-like settings
-```vim
-call roam#init#option('wiki_journal', {
-      \ 'name' : '',
-      \ 'frequency' : 'daily',
-      \ 'date_format' : {
-      \   'daily' : '%Y-%m-%d',
-      \   'monthly' : '%Y-%m',
-      \   'yearly' : '%Y',
-      \ },
-\})
-```
+- [vim-roam-md](): syntax highlighting for Markdown wiki files. This is a slightly
+  modified fork of [vim-markdown], adding concealment for wikilinks and highlighting of
+  inline TeX blocks.
+- [vim-roam-search](): a set of useful FZF search mappings for navigating wiki content.
+  Includes fuzzy searching wiki filenames, lines in wiki pages, exact searches in special
+  files (namely PDFs) with `ripgrepall`, special search rules for users with hard wrapped
+  text, etc. Opened files are passed through `wiki.vim`'s page opening function, allowing
+  pages to be added to the navigation history. Matched pages are also passed through
+  `wiki.vim`'s `WikiFileOpen` method, which can be customized in your `.vimrc` for
+  handling certain files. For example, this can be used to open a PDF file directly in a
+  document viewer of choice directly from a search match.
+- [vim-roam-task](): Taskwarrior integration in Markdown files. This is a fork of the
+  [Taskwiki]() plugin that removes the upstream repo's dependency on Vimwiki (and replaces
+  it with `wiki.vim`). This fork also adds note functionality to tasks, allowing you to
+  automatically create wiki files associated with tasks and sync task metadata to Markdown
+  headers.
+
+## Custom Roam-like settings
+In the case you're interesting in extra settings that might improve your wiki
+experience, consider taking a look at my current
+[.vimrc](https://github.com/samgriesemer/templates/blob/master/vim/.vimrc). This file is
+constantly changing and by no means the "right" settings. However, there may be a few
+useful settings for `wiki.vim` or one of the above extension plugins that you'd like to
+replicate in your own setup. For example, when creating journal pages using `wiki.vim`, I
+specify an empty path to place pages in the same flat directory as all other wiki files.
+There are also a number of wikilink resolver and opener methods for `wiki.vim` that might
+give you a good place to start for your own wikilink syntax.
