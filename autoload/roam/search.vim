@@ -94,7 +94,11 @@ function! s:accept_line(lines) abort "{{{1
       " Pass
     endtry
 
-    call wiki#page#open(l:fname)
+    if exists('g:wiki_loaded')
+        call wiki#page#open(l:fname)
+    else
+        exe 'edit '.l:fname
+    endif
     " can use `call cursor(lnum, col)` if get col info
     execute l:lnum
 endfunction
@@ -143,10 +147,18 @@ function! s:accept_page(lines) abort "{{{1
     endif
     
     " finally open with wiki.vim, optionally w command
-    if !empty(l:cmd)
-        call wiki#page#open(l:target, l:cmd)
+    if exists('g:wiki_loaded')
+        if !empty(l:cmd)
+            call wiki#page#open(l:target, l:cmd)
+        else
+            call wiki#page#open(l:target)
+        endif
     else
-        call wiki#page#open(l:target)
+        if !empty(l:cmd)
+            exe l:cmd.' '.l:target
+        else
+            exe 'edit '.l:target
+        endif
     endif
 endfunction
 
