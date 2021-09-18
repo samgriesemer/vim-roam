@@ -42,9 +42,12 @@ function! roam#blbuf#open(name)
     let l:save_win = win_getid()
     let l:win_list = win_findbuf(s:blbufnr)
     if empty(l:win_list)
-        execute 'rightb vert '.s:blbufnr.'sb'
-        if str2nr(&textwidth) > 0
-            execute 'vertical resize '.string(str2nr(&textwidth)+8)
+        if !s:dbl_flag
+            let s:dbl_flag = 1
+            execute 'rightb vert '.s:blbufnr.'sb'
+            if str2nr(&textwidth) > 0
+                execute 'vertical resize '.string(str2nr(&textwidth)+8)
+            endif
         endif
         setlocal noswapfile
         setlocal modifiable
@@ -102,9 +105,11 @@ function! roam#blbuf#close()
 endfunction
 
 let s:bltoggle = 0
+let s:dbl_flag = 0
 function! roam#blbuf#toggle()
     if s:bltoggle
         let s:bltoggle = 0
+        let s:dbl_flag = 0
         call roam#blbuf#close()
     else
         let s:bltoggle = 1
