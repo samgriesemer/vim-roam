@@ -72,5 +72,5 @@ call roam#init#apply_mappings_from_dict(s:mappings, '')
 
 " Initialize autocommands
 autocmd BufWinEnter *.md call roam#blbuf#update()
-autocmd WinEnter *.md call roam#blbuf#update()
+"autocmd WinEnter *.md call roam#blbuf#update()
 

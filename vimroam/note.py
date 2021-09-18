@@ -8,6 +8,9 @@ from colorama import Fore
 
 from vimroam import util
 
+# captures base link, anchors, display text; any combo of them
+link_regex = re.compile('\[\[([^\]]*?)(#[^\]]*?)?(?:\|([^\]]*?))?\]\]')
+
 class Note:
     '''
     Article object for operating on Markdown files. The class takes care of a lot of
@@ -44,8 +47,6 @@ class Note:
         self.tree = {}
         self.linkdata = {}
 
-            # could build in backlink processing to a process_links-like function
-
     def process_metadata(self):
         with open(self.fullpath, 'r') as f:
             ft = f.read()
@@ -67,10 +68,6 @@ class Note:
                 return metadata
 
             self.content = ft.replace(mt.group(0), '')
-            #for line in mt.group(1).split('\n'):
-                #split = [line.split(':')[0], ':'.join(line.split(':')[1:])]
-                #attr, val = map(str.strip, split)
-                #metadata[attr.lower()] = val
 
             # doesnt face issues if metadata components have colon and are only
             # one line, but when multiline colons can have unexpected effects
@@ -96,15 +93,10 @@ class Note:
 
         def comp(key, value, format, meta):
             if key == 'Header':
-                #print(self.name)
-                #print(value[2][0])
-                #current_header['c'] = value[2][0]['c'][1][0]['c']
-
                 title = []
                 for v in value[2]:
                     for vc in v['c'][1:]:
                         outer = vc
-                        #print('+++', outer[0])
                         if type(outer) == str:
                             title.append(outer)
                             continue
@@ -165,11 +157,7 @@ class Note:
         return tree
 
     def process_linkdata(self):
-        links = re.finditer(
-            pattern=r'\[\[(?:[^\]]*\||)([^\]]*?)(?:#[^\]]*)?\]\]',
-            # should probably be \[\[([^\]]*?)(\|[^\]]*?)?(#[^\]]*)?\]\]
-            string=self.raw_content
-        )
+        links = link_regex.finditer(self.raw_content)
 
         linkdata = defaultdict(list)
 
@@ -203,10 +191,7 @@ class Note:
         return linkdata
 
     def process_links(self, string):
-        links = re.findall(
-            pattern=r'\[\[(?:[^\]]*\||)([^\]]*?)(?:#[^\]]*)?\]\]',
-            string=string
-        )
+        links = link_regex.findall(string)
 
         lcounts = defaultdict(int)
         for link in links:
