@@ -10,6 +10,11 @@
 
 " define useful base values
 let rg_base = 'rg --column --line-number --no-heading --color=always --smart-case'
+let rg_colors = ' --colors ''path:fg:108,113,196'' '.
+              \ ' --colors ''line:fg:211,54,130'' '.
+              \ ' --colors ''column:fg:113,158,7'' '.
+              \ ' --colors ''match:fg:220,50,47'' '
+let rg_base = rg_base.rg_colors
 
 " general fzf search with preview
 function roam#search#fzf_grep_preview(cmd, pat, loc, qry, prm, nth, bng, pny, snk, ...)
