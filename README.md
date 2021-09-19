@@ -88,10 +88,11 @@ working on your system, you should be able to easily install it via the `pypando
 details.
 
 # Demo
-The following gif shows basic usage of the backlink buffer:
-
 ![Basic usage](screens/vim-roam-faster.gif)
 
+This shows basic navigation (with [vim-roam-search][1]) and opening the backlink buffer
+using `<leader>wb`. Navigation between wiki files in the left split automatically updates
+the backlink buffer in the right split.
 
 # Read before using
 
