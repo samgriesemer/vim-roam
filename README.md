@@ -324,7 +324,7 @@ why Vim-roam may be not be for you:
 [3]: https://github.com/samgriesemer/vim-roam-md
 [4]: https://github.com/plasticboy/vim-markdown
 [5]: https://github.com/tools-life/taskwiki
-[6]: https://github.com/samgriesemer/templates/blob/master/vim/.vimrc)
+[6]: https://github.com/samgriesemer/templates/blob/master/vim/.vimrc
 [7]: https://github.com/samgriesemer/wiki.vim
 [8]: https://en.wikipedia.org/wiki/Help:Link
 [9]: https://pypi.org/project/pypandoc/
