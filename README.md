@@ -26,11 +26,20 @@ issue or initiate a pull request. Contributions are very much welcome!
 
 ## Table of contents
 - [Installation](#installation)
+    * [Vim](#vim)
+    * [Python](#python)
+    * [Pandoc](#pandoc)
 - [Demo](#demo)
 - [Read before using](#read-before-using)
+    * [Wiki filetypes](#wiki-filetypes)
+    * [Default link syntax](#default-link-syntax)
+    * [Alternative syntax and link transformations](#alternative-syntax-and-link-transformations)
+        + [Working with wiki.vim](#working-with-wiki-vim)
 - [Setup and options](#setup-and-options)
+    * [If using wiki.vim](#if-using-wiki-vim)
 - [Usage](#usage)
 - [Extensions](#extensions)
+    * [Custom Roam-like settings](#custom-roam-like-settings)
 - [Why you shouldn't use Vim-roam](#why-you-shouldnt-use-vim-roam)
 
 # Installation
