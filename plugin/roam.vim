@@ -10,6 +10,7 @@ call roam#init#option('roam_wiki_root', get(g:, 'wiki_root', ''))
 call roam#init#option('roam_cache_root', expand('~/.cache/vim-roam'))
 call roam#init#option('roam_file2link', get(g:, 'wiki_map_file2link', ''))
 call roam#init#option('roam_mappings_use_defaults', 1)
+call roam#init#option('roam_auto_update', 1)
 
 
 " Initialize global commands
@@ -58,9 +59,10 @@ nnoremap <silent> <plug>(roam-fzf-unlinks)            :RoamFzfUnlinks<cr>
 " the following are applied if the user allows `all` or `global` defaults
 let s:mappings = g:roam_mappings_use_defaults > 0
       \ ? {
-      \ '<plug>(roam-backlink-buffer)': '<leader>wb',
-      \ '<plug>(roam-fzf-backlinks)':   '<leader>wzb',
-      \ '<plug>(roam-fzf-unlinks)':     '<leader>wzu',
+      \ '<plug>(roam-backlink-buffer)':        '<leader>wb',
+      \ '<plug>(roam-update-backlink-buffer)': '<leader>wbr',
+      \ '<plug>(roam-fzf-backlinks)':          '<leader>wzb',
+      \ '<plug>(roam-fzf-unlinks)':            '<leader>wzu',
       \} : {}
 
 " any user set global mappings are overridden here
@@ -71,6 +73,10 @@ call roam#init#apply_mappings_from_dict(s:mappings, '')
 
 
 " Initialize autocommands
-autocmd BufWinEnter *.md call roam#blbuf#update()
+if g:roam_auto_update
+    autocmd BufWinEnter *.md call roam#blbuf#update()
+endif
+
+" TODO: address this aggressive mapping, causes too many issues currently
 "autocmd WinEnter *.md call roam#blbuf#update()
 
