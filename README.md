@@ -294,7 +294,7 @@ for your own wikilink syntax.
 
 # Why you shouldn't use Vim-roam
 While Vim-roam can help improve your wiki experience in Vim, there are a number of reasons
-why Vim-roam may be not be for you:
+why Vim-roam may not be for you:
 
 - **Vim-roam is still in an early development stage**. I've mostly put this together in my
   free time as I've picked up Vimscript, and this plugin may not meet the level of quality
