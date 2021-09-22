@@ -292,6 +292,12 @@ pages in the same flat directory as all other wiki files. There are also a numbe
 wikilink transformation methods for `wiki.vim` that might give you a good place to start
 for your own wikilink syntax.
 
+I additionally make use of the following amazing plugins:
+
+- [bullets.vim][15]: automatic, smart Markdown lists. Indentation and list bullets
+- [Ultisnips][16]: 
+- [fzf.vim][17]
+
 # Why you shouldn't use Vim-roam
 While Vim-roam can help improve your wiki experience in Vim, there are a number of reasons
 why Vim-roam may not be for you:
@@ -319,6 +325,7 @@ why Vim-roam may not be for you:
   can take some time; for example, on my system it takes roughly 3 minutes to build the
   index for ~2500 pages from scratch.
 
+
 [1]: https://github.com/samgriesemer/vim-roam-search
 [2]: https://github.com/samgriesemer/vim-roam-task
 [3]: https://github.com/samgriesemer/vim-roam-md
@@ -333,3 +340,6 @@ why Vim-roam may not be for you:
 [12]: https://roamresearch.com
 [13]: https://github.com/lervag/wiki.vim/
 [14]: https://github.com/vimwiki/vimwiki
+[15]: https://github.com/dkarter/bullets.vim
+[16]: https://github.com/SirVer/ultisnips
+[17]: https://github.com/junegunn/fzf.vim

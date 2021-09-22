@@ -192,10 +192,10 @@ class Note:
 
     def process_links(self, string):
         links = link_regex.findall(string)
-
         lcounts = defaultdict(int)
+
         for link in links:
-            lcounts[link] += 1
+            lcounts[link[0]] += 1
 
         return lcounts
 

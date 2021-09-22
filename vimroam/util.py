@@ -16,8 +16,8 @@ def directory_tree(path):
     for (dirpath, dirnames, filenames) in os.walk(path):
         paths += [os.path.relpath(os.path.join(dirpath, file), path) \
                   for file in filenames if not \
-                  file.startswith('.')]
-                  #any([dir.startswith('.') for dir in os.path.join(dirpath,file).split('/')])]
+                  #file.startswith('.')]
+                  any([dir.startswith('.') for dir in os.path.join(dirpath,file).split('/')])]
     return paths
 
 def check_dir(path):
