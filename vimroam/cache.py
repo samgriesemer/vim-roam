@@ -36,4 +36,3 @@ class Cache():
         with self.file.open('wb') as f:
             pickle.dump(obj, f)
 
-

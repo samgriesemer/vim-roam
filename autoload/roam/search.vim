@@ -31,15 +31,11 @@ function roam#search#fzf_grep_preview(cmd, pat, loc, qry, prm, nth, bng, pny, sn
     \           '--expect=ctrl-x,ctrl-v,'.get(g:, 'wiki_fzf_pages_force_create_key', 'alt-enter'),
     \       ]})
 
-    "       'right': '100'
-    "   }, 'down:70%:wrap')
-    
     if a:pny
         call add(spec.options, '--phony')
     endif
 
     if a:0 > 0
-        "let spec = extend(spec, a:1)
         let pos = index(spec['options'], '--preview')
         let spec.options[pos+1] = a:1
     endif

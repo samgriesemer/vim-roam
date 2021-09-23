@@ -85,7 +85,7 @@ function! roam#blbuf#open(name)
         \ 'pos': 'bottom',
         \ 'rows': 10,
         \ 'focus': 0,
-        "\ 'close': 1
+        \ 'close': 1
     \ }, 'python3 -m vimroam.main '.s:wroot.' -v')
 
     " restore previous window
