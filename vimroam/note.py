@@ -152,15 +152,9 @@ class Note:
                     if tree.get(i) is None:
                         tree[i] = obj
 
-        from timeit import default_timer as timer
-        s = timer()
         #cm = pp.convert_file(self.fullpath, format='commonmark+sourcepos', to='json')
         cm = subp.check_output(["pandoc", "--from", "commonmark+sourcepos", "--to", "json", self.fullpath])
-        c = timer()
         pf.applyJSONFilters([comp], cm)
-        a = timer()
-        print('conversion: {}s'.format(c-s))
-        print('filter: {}s'.format(a-c))
 
         return tree
 
@@ -208,15 +202,7 @@ class Note:
         return lcounts
 
     def process_structure(self):
-        from timeit import default_timer as timer
-        s = timer()
         self.links    = self.process_links(self.content)
-        l = timer()
         self.tree     = self.context_tree()
-        t = timer()
         self.linkdata = self.process_linkdata()
-        f = timer()
-        print('process_links(): {}s'.format((l-s)))
-        print('tree(): {}s'.format((t-l)))
-        print('linkdata(): {}s'.format((f-t)))
 

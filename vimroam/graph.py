@@ -119,9 +119,7 @@ class Graph:
         return {'nodes': nodes, 'links': edges}
 
     def add_article(self, article):
-        from timeit import default_timer as timer
         # reset indexes if article previously processed
-        s = timer()
         if article.name in self.article_map:
             cur_article = self.article_map[article.name]
             self.fgraph[article.name] = {}
@@ -137,22 +135,10 @@ class Graph:
                 self.series_map[ref].remove(article.name)
         
         self.article_map[article.name] = article
-        p = timer()
         self.process_links(article)
-        l = timer()
         self.process_tags(article)
-        t = timer()
         self.process_series(article)
-        r = timer()
         self.process_backlinks(article)
-        b = timer()
-
-        print('processing: {}s'.format(p-s))
-        print('links: {}s'.format(l-p))
-        print('tags: {}s'.format(t-l))
-        print('series: {}s'.format(r-t))
-        print('backlinks: {}s'.format(b-r))
-
 
     def process_links(self, article):
         for link, count in article.links.items():
