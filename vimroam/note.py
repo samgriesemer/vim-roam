@@ -1,6 +1,7 @@
 import re
 from collections import defaultdict
 from datetime import datetime
+import subprocess as subp
 
 import pypandoc as pp
 import pandocfilters as pf
@@ -151,14 +152,20 @@ class Note:
                     if tree.get(i) is None:
                         tree[i] = obj
 
-        cm = pp.convert_file(self.fullpath, format='commonmark+sourcepos', to='json')
+        from timeit import default_timer as timer
+        s = timer()
+        #cm = pp.convert_file(self.fullpath, format='commonmark+sourcepos', to='json')
+        cm = subp.check_output(["pandoc", "--from", "commonmark+sourcepos", "--to", "json", self.fullpath])
+        c = timer()
         pf.applyJSONFilters([comp], cm)
+        a = timer()
+        print('conversion: {}s'.format(c-s))
+        print('filter: {}s'.format(a-c))
 
         return tree
 
     def process_linkdata(self):
         links = link_regex.finditer(self.raw_content)
-
         linkdata = defaultdict(list)
 
         for m in links:
@@ -179,6 +186,7 @@ class Note:
                 else:
                     header = context['h']
                     text = context['v']
+            else: continue
            
             linkdata[name].append({
                 'ref':  self,
@@ -200,7 +208,15 @@ class Note:
         return lcounts
 
     def process_structure(self):
+        from timeit import default_timer as timer
+        s = timer()
         self.links    = self.process_links(self.content)
+        l = timer()
         self.tree     = self.context_tree()
+        t = timer()
         self.linkdata = self.process_linkdata()
+        f = timer()
+        print('process_links(): {}s'.format((l-s)))
+        print('tree(): {}s'.format((t-l)))
+        print('linkdata(): {}s'.format((f-t)))
 

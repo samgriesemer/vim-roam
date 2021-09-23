@@ -61,7 +61,6 @@ def update_graph_node(note, graph, wiki_root):
     #name = path.stem
     # or
     name = str(Path(note).with_suffix(''))
-
     if path.suffix != '.md': return False
 
     if name in graph.article_map:
@@ -121,7 +120,26 @@ if __name__ == '__main__':
 
     content = ''
     if args.name:
+        tag_list = roam_graph.get_tag_list(args.name)
+        if tag_list:
+            hstr = '== Tags for {} =='.format(args.name)
+            if args.write: content += hstr+'\n'
+            else: print(hstr)
+
+        for tag in tag_list:
+            tstr = '+ [[{}]]'.format(tag)
+            if args.write: content += tstr+'\n'
+            else: print(tstr)
+
+        if args.write: content += '\n'
+        else: print()
+
         backlinks = roam_graph.get_backlinks(args.name)
+        if backlinks:
+            hstr = '== Backlinks for {} =='.format(args.name)
+            if args.write: content += hstr+'\n'
+            else: print(hstr)
+
         for srclist in backlinks.values():
             ref = srclist[0]['ref']
             title = ref.metadata.get('title')
@@ -133,9 +151,11 @@ if __name__ == '__main__':
             else: print(tstr)
 
             for link in srclist:
-                cstr = link['context']
+                cstr = link['context'].strip()+'\n'
                 if args.write: content += cstr+'\n'
                 else: print(cstr)
+
+
 
     if args.write:
         with open(str(Path(cachepath, 'backlink.buffer')), 'w') as f:

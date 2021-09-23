@@ -25,14 +25,14 @@ function! roam#blbuf#post_async(n)
     silent! execute "call deletebufline(".s:blbufnr.", 1, '$')"
 
     " shifts file down when writing line 0
-    call appendbufline(s:blbufnr, 1, ['== Backlinks for '.a:n.' ==', ''])
-    silent! execute "call deletebufline(".s:blbufnr.", 1)"
+    "call appendbufline(s:blbufnr, 1, ['== Backlinks for '.a:n.' ==', ''])
 
     if empty(trim(l:out))
         let l:out = 'No backlinks found for '.a:n
     endif
 
-    call appendbufline(s:blbufnr, 2, split(l:out, '\n'))
+    call appendbufline(s:blbufnr, 1, split(l:out, '\n'))
+    silent! execute "call deletebufline(".s:blbufnr.", 1)"
 
     " unset run flag
     let s:run_flag = 0
@@ -85,15 +85,11 @@ function! roam#blbuf#open(name)
         \ 'pos': 'bottom',
         \ 'rows': 10,
         \ 'focus': 0,
-        \ 'close': 1
+        "\ 'close': 1
     \ }, 'python3 -m vimroam.main '.s:wroot.' -v')
 
     " restore previous window
     call win_gotoid(l:save_win)
-
-    "call asyncrun#run('', {'mode': 'term', 'post': 'call roam#blbuf#post_async("'.a:name.'")'}, 'cd /home/smgr/.vim/plugged/vim-roam/ && python3 -m vimroam.main '.s:wroot.' --verbose --write --name='.a:name)
-    "opting for full term mode?
-    "execute "AsyncRun -mode=term -post=call\\ roam\\#blbuf\\#post_async('".a:name."')  cd /home/smgr/.vim/plugged/vim-roam/ && python3 -m vimroam.main ".s:wroot." -v"
 endfunction
 
 function! roam#blbuf#close()
