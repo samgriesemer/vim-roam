@@ -122,23 +122,36 @@ if __name__ == '__main__':
     if args.name:
         tag_list = roam_graph.get_tag_list(args.name)
         if tag_list:
-            hstr = '== Tags for {} =='.format(args.name)
-            if args.write: content += hstr+'\n'
-            else: print(hstr)
+            hstr = '=== **Tags** for ***{}*** ==='.format(args.name)
+            if args.write:
+                content += '+'*(len(hstr)-10)+'\n'
+                content += hstr+'\n'
+                content += '+'*(len(hstr)-10)+'\n'
+            else:
+                print('+'*(len(hstr)-10))
+                print(hstr)
+                print('+'*(len(hstr)-10))
 
-        for tag in tag_list:
-            tstr = '+ [[{}]]'.format(tag)
-            if args.write: content += tstr+'\n'
-            else: print(tstr)
+            for tag in tag_list:
+                tstr = '+ [[{}]]'.format(tag)
+                if args.write: content += tstr+'\n'
+                else: print(tstr)
 
-        if args.write: content += '\n'
-        else: print()
+            if args.write:
+                content += '\n\n'
+            else: print('\n')
 
         backlinks = roam_graph.get_backlinks(args.name)
         if backlinks:
-            hstr = '== Backlinks for {} =='.format(args.name)
-            if args.write: content += hstr+'\n'
-            else: print(hstr)
+            hstr = '=== **Backlinks** for ***{}*** ==='.format(args.name)
+            if args.write:
+                content += '+'*(len(hstr)-10)+'\n'
+                content += hstr+'\n'
+                content += '+'*(len(hstr)-10)+'\n'
+            else:
+                print('+'*(len(hstr)-10))
+                print(hstr)
+                print('+'*(len(hstr)-10))
 
         for srclist in backlinks.values():
             ref = srclist[0]['ref']
