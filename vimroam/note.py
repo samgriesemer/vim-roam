@@ -13,22 +13,6 @@ from vimroam import util
 link_regex = re.compile('\[\[([^\]]*?)(#[^\]]*?)?(?:\|([^\]]*?))?\]\]')
 
 class Note:
-    '''
-    Article object for operating on Markdown files. The class takes care of a lot of
-    desired features automatically, stripping metadata out of YAML block, performing
-    custom text transformations (like wiki links to Markdown style links), and
-    converting the resulting text to HTML. This class is admittedly a bit sloppy and
-    specific to my own needs at the moment.
-
-    :param fullpath:
-
-    :param name:
-
-    :param verbose:
-
-    :var link:
-
-    '''
     def __init__(self, fullpath, name, verbose=True):
         self.fullpath = fullpath
         self.name = name
