@@ -2,3 +2,4 @@ pypandoc
 pandocfilters
 tqdm
 dill
+colorama
