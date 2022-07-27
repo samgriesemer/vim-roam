@@ -63,38 +63,60 @@ function! s:accept_line(lines) abort "{{{1
     " if no matches for query or special key used
     " ignore special key for now since it seems phony only outputs 2 params + we dont care
     " about special handling on lies
-    if len(a:lines) == 2 || !empty(a:lines[1])
+    if len(a:lines) == 2
         let l:fname = a:lines[0]
         return
         "let l:comp = split(a:lines[1], ':')
+    else
+        let l:comp = split(a:lines[2], ':')
+        let l:fname = l:comp[0]
+        let l:lnum  = l:comp[1]
+        let l:page = 1
+        let l:cmd = ''
+
+        " handle specific keys
+        if a:lines[1] == 'ctrl-x'
+            " regular vim split
+            let l:cmd = 'split'
+        elseif a:lines[1] == 'ctrl-v'
+            " vertical vim split
+            let l:cmd = 'vsplit'
+        endif
+
+
+        " for certain docs rga will place "Page x" within doc preview, giving page number in
+        " match line
+        if len(l:comp) >= 4
+            if match(l:comp[3], '^Page \d\+$') == 0
+                let l:page = substitute(l:comp[3], '^Page \(\d\+\)$', '\1', '')
+            endif
+        endif
+
+        try
+            if call(get(g:, 'wiki_file_handler', ''), [], {'path':l:fname,'page':l:page})
+                return
+            endif
+        catch /E117:/
+          " Pass
+        endtry
     endif
 
-    let l:comp = split(a:lines[2], ':')
-    let l:fname = l:comp[0]
-    let l:lnum  = l:comp[1]
-    let l:page = 1
-
-    " for certain docs rga will place "Page x" within doc preview, giving page number in
-    " match line
-    if len(l:comp) >= 4
-        if match(l:comp[3], '^Page \d\+$') == 0
-            let l:page = substitute(l:comp[3], '^Page \(\d\+\)$', '\1', '')
-        endif
-    endif
-
-    try
-        if call(get(g:, 'wiki_file_handler', ''), [], {'path':l:fname,'page':l:page})
-            return
-        endif
-    catch /E117:/
-      " Pass
-    endtry
 
     if exists('g:wiki_loaded')
-        call wiki#page#open(l:fname)
+        if !empty(l:cmd)
+            call wiki#page#open(l:fname, l:cmd)
+        else
+            call wiki#page#open(l:fname)
+        endif
     else
-        exe 'edit '.l:fname
+        if !empty(l:cmd)
+            exe l:cmd.' '.l:fname
+        else
+            exe 'edit '.l:fname
+        endif
     endif
+
+
     " can use `call cursor(lnum, col)` if get col info
     execute l:lnum
 endfunction
